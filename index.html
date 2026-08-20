@@ -86,6 +86,7 @@
   .wallet-hist-item .wallet-hist-info{opacity:.85;font-size:10.5px;}
   .wallet-hist-item .wallet-hist-valor{font-weight:700;font-size:13px;}
   .wallet-ver-mais{width:100%;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.35);font-size:12px;padding:7px;border-radius:6px;margin-top:10px;cursor:pointer;}
+  .insight-box{background:var(--verde-claro);border:1px solid var(--line);border-left:4px solid var(--verde);border-radius:8px;padding:16px 18px;font-size:14px;line-height:1.65;color:var(--ink);margin-bottom:16px;}
 </style>
 </head>
 <body>
@@ -121,6 +122,7 @@
   <div id="abasNav" style="display:flex;gap:8px;margin-bottom:16px;">
     <button id="tabPedidosBtn" onclick="mostrarAba('pedidos')" style="background:var(--laranja);color:#fff;border-color:var(--laranja);font-weight:600;">Pedidos</button>
     <button id="tabRelatorioBtn" onclick="mostrarAba('relatorio')">Relatório</button>
+    <button id="tabInvestidorBtn" onclick="mostrarAba('investidor')" style="display:none;">Saúde do Investimento</button>
   </div>
 
   <div class="layout-grid">
@@ -140,6 +142,24 @@
     <div class="panel">
       <h2>Panorama financeiro</h2>
       <div id="graficoFinanceiro"></div>
+    </div>
+  </div>
+
+  <div id="painelInvestidor" style="display:none;">
+    <div class="panel">
+      <h2>Como está o investimento</h2>
+      <div class="insight-box" id="investidorTexto">Carregando...</div>
+      <div class="cards" id="investidorCards"></div>
+    </div>
+    <div class="panel">
+      <h2>Pedidos em aberto por tempo de espera</h2>
+      <div class="hint">Pedidos com o sinal já pago, ainda sem repasse, agrupados por quantos dias já se passaram desde o sinal.</div>
+      <div id="graficoAging"></div>
+    </div>
+    <div class="panel">
+      <h2>Ponto de equilíbrio</h2>
+      <div class="hint">Quanto do total já aportado pelo investidor já voltou, versus quanto ainda está em giro nos pedidos em andamento.</div>
+      <div id="graficoEquilibrio"></div>
     </div>
   </div>
 
@@ -400,6 +420,7 @@ const SCRIPT_URL_KEY = 'apps_script_url';
 const SESSION_KEY = 'sessao_usuario_perfil';
 let perfilAtual = null;
 let usuarioAtual = null;
+let sessaoToken = null;
 
 function lsGet(key){
   try{ return localStorage.getItem(key); }catch(e){ return null; }
@@ -419,6 +440,7 @@ async function verificarSessao(){
       if(s && s.perfil){
         perfilAtual = s.perfil;
         usuarioAtual = s.usuario;
+        sessaoToken = s.token || null;
         return true;
       }
     }
@@ -445,7 +467,8 @@ async function tentarLogin(btn){
     if(json.ok){
       perfilAtual = json.perfil;
       usuarioAtual = email;
-      lsSet(SESSION_KEY, JSON.stringify({perfil:perfilAtual, usuario:usuarioAtual}));
+      sessaoToken = json.token || null;
+      lsSet(SESSION_KEY, JSON.stringify({perfil:perfilAtual, usuario:usuarioAtual, token:sessaoToken}));
       entrarNoSistema();
     } else {
       erroEl.textContent = json.error || 'E-mail ou senha inválidos.';
@@ -458,7 +481,25 @@ async function tentarLogin(btn){
 }
 
 async function sair(){
+  if(sessaoToken){
+    try{
+      const url = await getScriptUrl();
+      if(url){
+        fetch(url, {
+          method:'POST',
+          headers:{'Content-Type':'text/plain;charset=utf-8'},
+          body: JSON.stringify({action:'logout', token: sessaoToken})
+        }).catch(()=>{});
+      }
+    }catch(e){}
+  }
   lsRemove(SESSION_KEY);
+  location.reload();
+}
+
+async function sessaoExpirada(){
+  lsRemove(SESSION_KEY);
+  alert('Sua sessão precisa ser renovada — entre novamente.');
   location.reload();
 }
 
@@ -474,6 +515,7 @@ function entrarNoSistema(){
   const nomesPerfil = {diretor:'Diretor', grafica:'Gráfica', assistente:'Assistente'};
   document.getElementById('userLabel').textContent = usuarioAtual + ' · ' + (nomesPerfil[perfilAtual] || perfilAtual);
   document.getElementById('tabRelatorioBtn').style.display = (perfilAtual==='assistente') ? 'none' : '';
+  document.getElementById('tabInvestidorBtn').style.display = (perfilAtual==='diretor') ? '' : 'none';
   document.getElementById('walletSidebar').style.display = (perfilAtual==='assistente') ? 'none' : '';
   aplicarPermissoesUI();
   load();
@@ -552,9 +594,14 @@ async function postToSheet(payload){
     const res = await fetch(url, {
       method: 'POST',
       headers: {'Content-Type':'text/plain;charset=utf-8'},
-      body: JSON.stringify(payload)
+      body: JSON.stringify({...payload, token: sessaoToken})
     });
-    return await res.json();
+    const json = await res.json();
+    if(json && json.sessaoInvalida){
+      await sessaoExpirada();
+      return json;
+    }
+    return json;
   }catch(e){
     console.error('Falha ao gravar no banco de dados', e);
     return {ok:false, error:String(e)};
@@ -867,6 +914,12 @@ function diasDesde(d){
   const hoje = new Date(hojeStr()+'T00:00:00');
   return Math.floor((hoje-dt)/(1000*60*60*24));
 }
+function diasEntreDatas(d1, d2){
+  const a = parseAnyDate(d1);
+  const b = parseAnyDate(d2);
+  if(!a || !b) return null;
+  return Math.round((b-a)/(1000*60*60*24));
+}
 function diasUteisDesde(d){
   const dt = parseAnyDate(d);
   if(!dt) return null;
@@ -995,16 +1048,132 @@ function valorSinalLiquidoDe(p){
 let abaAtual = 'pedidos';
 
 function mostrarAba(aba){
+  if(aba==='investidor' && perfilAtual!=='diretor') aba='pedidos'; // segurança extra: só diretor acessa essa aba, mesmo se chamada por outro caminho
   abaAtual = aba;
   document.getElementById('painelPedidos').style.display = aba==='pedidos' ? 'block' : 'none';
   document.getElementById('painelRelatorio').style.display = aba==='relatorio' ? 'block' : 'none';
+  document.getElementById('painelInvestidor').style.display = aba==='investidor' ? 'block' : 'none';
   const btnPedidos = document.getElementById('tabPedidosBtn');
   const btnRelatorio = document.getElementById('tabRelatorioBtn');
+  const btnInvestidor = document.getElementById('tabInvestidorBtn');
   const ativo = 'background:var(--laranja);color:#fff;border-color:var(--laranja);font-weight:600;';
   const inativo = '';
   btnPedidos.style.cssText = aba==='pedidos' ? ativo : inativo;
   btnRelatorio.style.cssText = aba==='relatorio' ? ativo : inativo;
+  btnInvestidor.style.cssText = aba==='investidor' ? ativo : inativo;
+  if(perfilAtual!=='diretor') btnInvestidor.style.display = 'none'; // reforça: cssText acima não pode reexibir o botão
   if(aba==='relatorio') renderizarRelatorio();
+  if(aba==='investidor') renderizarPainelInvestidor();
+}
+
+// Agrupa os pedidos com sinal pago e ainda sem repasse por quantos dias já
+// se passaram desde o sinal — mostra onde está o "gargalo" de produção.
+function calcularAging(){
+  const abertos = pedidos.filter(p=>statusSinalDe(p)==='Pago' && !p.dataRepasseInvestidor);
+  const faixas = [
+    { label:'Até 15 dias', min:0, max:15, cor:'#00843D', qtd:0, valor:0 },
+    { label:'16 a 30 dias', min:16, max:30, cor:'#c1a300', qtd:0, valor:0 },
+    { label:'31 a 60 dias', min:31, max:60, cor:'#c1591a', qtd:0, valor:0 },
+    { label:'Mais de 60 dias', min:61, max:Infinity, cor:'#b30000', qtd:0, valor:0 }
+  ];
+  abertos.forEach(p=>{
+    const dias = diasDesde(p.dataSinal);
+    if(dias===null) return;
+    const faixa = faixas.find(f=>dias>=f.min && dias<=f.max);
+    if(faixa){ faixa.qtd++; faixa.valor += devolverInvestidorDe(p); }
+  });
+  return {
+    faixas,
+    totalAbertos: abertos.length,
+    totalValor: abertos.reduce((s,p)=>s+devolverInvestidorDe(p),0)
+  };
+}
+
+// Tempo médio entre o sinal ser pago e o repasse acontecer, olhando só os
+// pedidos já concluídos — é o "prazo real" que o dinheiro leva pra voltar.
+function calcularCicloMedio(){
+  const concluidos = pedidos.filter(p=>p.dataSinal && p.dataRepasseInvestidor);
+  const dias = concluidos
+    .map(p=>diasEntreDatas(p.dataSinal, p.dataRepasseInvestidor))
+    .filter(d=>d!==null && d>=0);
+  if(!dias.length) return { media:null, qtd:0, min:null, max:null };
+  const media = dias.reduce((s,d)=>s+d,0) / dias.length;
+  return { media, qtd:dias.length, min:Math.min(...dias), max:Math.max(...dias) };
+}
+
+// Quanto do total já aportado pelo investidor já voltou (sinal+juros dos
+// pedidos concluídos), versus quanto ainda está em giro nos pedidos abertos.
+async function calcularPontoEquilibrio(){
+  let totalAportado = 0;
+  if(usingServer){
+    const carteira = await fetchCarteira();
+    if(carteira) totalAportado = carteira.lancamentos.filter(l=>l.tipo==='Aporte').reduce((s,l)=>s+parseBRL(l.valor),0);
+  }
+  const concluidos = pedidos.filter(p=>p.dataRepasseInvestidor);
+  const totalRepassado = concluidos.reduce((s,p)=>s+devolverInvestidorDe(p),0);
+  const emGiro = pedidos
+    .filter(p=>statusSinalDe(p)==='Pago' && !p.dataRepasseInvestidor)
+    .reduce((s,p)=>s+devolverInvestidorDe(p),0);
+  const pct = totalAportado>0 ? (totalRepassado/totalAportado)*100 : 0;
+  return { totalAportado, totalRepassado, emGiro, pct };
+}
+
+function gerarNarrativaInvestidor(aging, ciclo, equilibrio){
+  const partes = [];
+
+  partes.push(`Hoje existem ${aging.totalAbertos} pedido${aging.totalAbertos===1?'':'s'} com o sinal já pago que ainda não voltaram pro investidor, somando ${fmt(aging.totalValor)}.`);
+
+  if(ciclo.qtd>0){
+    partes.push(`Olhando os ${ciclo.qtd} pedido${ciclo.qtd===1?'':'s'} já concluído${ciclo.qtd===1?'':'s'} até agora, o tempo médio entre o sinal e o repasse foi de ${Math.round(ciclo.media)} dias (variando de ${ciclo.min} a ${ciclo.max} dias).`);
+  } else {
+    partes.push('Ainda não há pedidos concluídos suficientes pra calcular um tempo médio de retorno.');
+  }
+
+  const critico = aging.faixas[aging.faixas.length-1];
+  if(critico && critico.qtd>0){
+    partes.push(`⚠️ ${critico.qtd} pedido${critico.qtd===1?'':'s'} está${critico.qtd===1?'':'ão'} há mais de 60 dias sem repasse, somando ${fmt(critico.valor)} — vale olhar esses com prioridade, provavelmente estão travados na produção ou na entrega.`);
+  }
+
+  if(equilibrio.totalAportado>0){
+    partes.push(`Do total de ${fmt(equilibrio.totalAportado)} que o investidor já aportou, ${fmt(equilibrio.totalRepassado)} (${equilibrio.pct.toFixed(0)}%) já voltaram.`);
+    if(equilibrio.pct>=100){
+      partes.push('O investidor já recuperou tudo que aportou até agora — o que voltar daqui pra frente é ganho líquido em cima do que foi investido.');
+    } else {
+      partes.push(`Os ${fmt(equilibrio.emGiro)} restantes estão em pedidos ainda em andamento — o retorno depende de quão rápido a produção e a entrega avançam.`);
+    }
+  } else {
+    partes.push('Ainda não há aportes registrados na carteira pra calcular o ponto de equilíbrio.');
+  }
+
+  return partes.join(' ');
+}
+
+async function renderizarPainelInvestidor(){
+  const aging = calcularAging();
+  const ciclo = calcularCicloMedio();
+  const equilibrio = await calcularPontoEquilibrio();
+
+  document.getElementById('investidorTexto').textContent = gerarNarrativaInvestidor(aging, ciclo, equilibrio);
+
+  document.getElementById('investidorCards').innerHTML = `
+    <div class="metric"><div class="label">Pedidos em aberto</div><div class="value">${aging.totalAbertos}</div></div>
+    <div class="metric"><div class="label">Valor em aberto</div><div class="value">${fmt(aging.totalValor)}</div></div>
+    <div class="metric"><div class="label">Ciclo médio (sinal → repasse)</div><div class="value">${ciclo.qtd ? Math.round(ciclo.media)+' dias' : '—'}</div></div>
+    <div class="metric"><div class="label">Já recuperado do aportado</div><div class="value">${equilibrio.totalAportado>0 ? equilibrio.pct.toFixed(0)+'%' : '—'}</div></div>
+  `;
+
+  const itemsAging = aging.faixas.map(f=>({
+    label: `${f.label} (${f.qtd} pedido${f.qtd===1?'':'s'})`,
+    valor: f.valor,
+    cor: f.cor
+  }));
+  document.getElementById('graficoAging').innerHTML = renderizarBarrasHTML(itemsAging, fmt);
+
+  const itemsEquilibrio = [
+    { label:'Já repassado ao investidor', valor: equilibrio.totalRepassado, cor:'#00843D' },
+    { label:'Ainda em giro (pedidos abertos)', valor: equilibrio.emGiro, cor:'#c1591a' }
+  ];
+  document.getElementById('graficoEquilibrio').innerHTML = renderizarBarrasHTML(itemsEquilibrio, fmt);
 }
 
 async function renderizarRelatorio(){
