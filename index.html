@@ -20,14 +20,11 @@
   header img{height:40px;width:auto;border-radius:6px;background:#fff;padding:4px;}
   header .htext h1{font-size:18px;margin:0;font-weight:700;}
   header .htext .sub{font-size:12.5px;opacity:.9;margin-top:2px;}
-  .wrap{max-width:1080px;margin:0 auto;padding:22px 24px 40px;}
+  .wrap{max-width:1280px;margin:0 auto;padding:18px 16px 40px;}
   .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:14px;}
   .metric{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--verde);border-radius:8px;padding:14px 16px;}
   .metric .label{font-size:12px;color:var(--muted);margin-bottom:4px;}
   .metric .value{font-size:19px;font-weight:700;color:var(--verde-esc);}
-  #investidorResumoRapido .metric{border-left-width:6px;padding:18px 20px;}
-  #investidorResumoRapido .metric .label{font-size:13px;}
-  #investidorResumoRapido .metric .value{font-size:26px;}
   .statusrow{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
   .schip{font-size:12px;padding:6px 12px;border-radius:20px;background:var(--card);border:1px solid var(--line);font-weight:600;}
   .panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:18px;}
@@ -61,6 +58,58 @@
   .mini{display:flex;align-items:center;gap:6px;font-size:12.5px;}
   .mini input[type=date]{width:150px;}
   .mini select{width:110px;}
+  .subtab{font-size:12.5px;padding:6px 14px;}
+  .btn-vermais{background:transparent;border:none;color:var(--verde-esc);font-size:12.5px;font-weight:600;cursor:pointer;padding:4px 6px;white-space:nowrap;}
+  .btn-vermais:hover{color:var(--laranja);text-decoration:underline;}
+
+  /* Tela de acompanhamento de pedidos — camadas 1/2/3 */
+  .resumo-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;margin-bottom:16px;}
+  .resumo-card{flex:0 0 auto;min-width:148px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 16px;cursor:pointer;transition:border-color .12s,background .12s;}
+  .resumo-card:hover{border-color:var(--laranja);}
+  .resumo-card.ativo{border-color:var(--laranja);background:var(--verde-claro);}
+  .resumo-card .rc-label{font-size:11.5px;color:var(--muted);margin-bottom:4px;white-space:nowrap;}
+  .resumo-card .rc-count{font-size:21px;font-weight:700;color:var(--verde-esc);line-height:1;}
+  .resumo-card .rc-soma{font-size:11.5px;color:var(--muted);margin-top:4px;}
+
+  .tabela-op{width:100%;border-collapse:collapse;font-size:13px;}
+  .tabela-op th{text-align:left;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap;}
+  .tabela-op td{padding:10px;border-bottom:1px solid var(--line);vertical-align:middle;}
+  .tabela-op tbody tr:hover td{background:#fafcf9;}
+  .caminho-badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:6px;}
+  .caminho-a{background:var(--ok-bg);color:var(--ok);}
+  .caminho-b{background:var(--info-bg);color:var(--info);}
+  .caminho-c{background:var(--wait-bg);color:var(--wait);}
+  .caminho-indef{background:#eee;color:var(--muted);}
+
+  .modal-overlay{position:fixed;inset:0;background:rgba(20,30,20,.45);display:none;align-items:flex-start;justify-content:center;padding:40px 16px;z-index:100;overflow-y:auto;}
+  .modal-overlay.aberto{display:flex;}
+  .modal-panel{background:var(--card);border-radius:12px;max-width:740px;width:100%;padding:24px 26px;box-shadow:0 20px 50px rgba(0,0,0,.2);position:relative;}
+  .modal-close{position:absolute;top:14px;right:14px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%;cursor:pointer;font-size:15px;line-height:1;color:var(--muted);}
+  .modal-close:hover{background:rgba(0,0,0,.06);}
+  .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;margin:16px 0;font-size:13px;}
+  .modal-grid .k{color:var(--muted);font-size:11px;}
+  .modal-grid .v{font-weight:600;margin-top:2px;}
+
+  .timeline-op{display:flex;gap:0;margin:18px 0;overflow-x:auto;}
+  .timeline-op .tl-step{flex:1;min-width:88px;text-align:center;position:relative;padding-top:18px;}
+  .timeline-op .tl-step:before{content:'';position:absolute;top:6px;left:0;right:0;height:2px;background:var(--line);}
+  .timeline-op .tl-step:first-child:before{left:50%;}
+  .timeline-op .tl-step:last-child:before{right:50%;}
+  .timeline-op .tl-dot{position:absolute;top:0;left:50%;transform:translateX(-50%);width:13px;height:13px;border-radius:50%;background:var(--line);border:2px solid var(--card);}
+  .timeline-op .tl-step.feito .tl-dot{background:var(--ok);}
+  .timeline-op .tl-step.atual .tl-dot{background:var(--laranja);}
+  .timeline-op .tl-step .tl-label{font-size:10.5px;color:var(--muted);margin-top:6px;}
+  .timeline-op .tl-step.feito .tl-label,.timeline-op .tl-step.atual .tl-label{color:var(--ink);font-weight:600;}
+
+  .mural-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);}
+  .mural-avatar{flex:0 0 30px;height:30px;border-radius:50%;background:var(--verde);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;}
+  .mural-avatar.iara{background:var(--laranja);}
+  .mural-texto{font-size:13px;}
+  .mural-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+
+  .status-linha{display:flex;align-items:center;gap:8px;font-size:11.5px;margin-bottom:5px;}
+  .status-linha:last-child{margin-bottom:0;}
+  .status-tag-label{color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.03em;min-width:70px;}
   .stepline{font-size:12px;color:var(--muted);margin-top:10px;}
   .spinner{width:12px;height:12px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;display:inline-block;vertical-align:-2px;margin-right:6px;opacity:.85;animation:girar .6s linear infinite;}
   @keyframes girar{to{transform:rotate(360deg);}}
@@ -77,6 +126,9 @@
   @media (max-width:900px){ .layout-grid{grid-template-columns:1fr;} .layout-sidebar{order:-1;} }
   .layout-main{min-width:0;}
   .wallet-card{background:linear-gradient(150deg,var(--verde-esc),var(--verde));color:#fff;border-radius:14px;padding:20px;position:sticky;top:16px;box-shadow:0 8px 24px rgba(0,0,0,.12);}
+  .wallet-modal-panel{background:linear-gradient(150deg,var(--verde-esc),var(--verde));color:#fff;}
+  .wallet-modal-panel .modal-close{color:rgba(255,255,255,.8);}
+  .wallet-modal-panel .modal-close:hover{background:rgba(255,255,255,.15);}
   .wallet-saldo-label{font-size:11px;text-transform:uppercase;letter-spacing:.5px;opacity:.85;}
   .wallet-saldo-valor{font-size:26px;font-weight:800;margin:4px 0 10px;}
   .wallet-hint{font-size:11.5px;opacity:.85;line-height:1.4;margin-bottom:14px;}
@@ -113,6 +165,7 @@
     <div class="sub">Sinal do investidor, emissão de nota, lançamento na loja e repasse — tudo em um só lugar</div>
   </div>
   <span id="userLabel" style="margin-left:auto;"></span>
+  <span id="walletBtn" onclick="toggleWalletModal(true)" title="Carteira do investidor" style="cursor:pointer;font-size:13px;opacity:.9;margin-right:14px;display:none;background:rgba(255,255,255,.15);padding:6px 12px;border-radius:20px;">💰 <span id="walletSaldoMini">—</span></span>
   <span onclick="sair()" title="Sair" style="cursor:pointer;font-size:13px;opacity:.85;margin-right:10px;">Sair</span>
   <span id="gearBtn" onclick="toggleConfigPanel()" title="Conexão" style="cursor:pointer;font-size:18px;opacity:.85;">⚙️</span>
 </header>
@@ -122,14 +175,247 @@
     ⚠️ Banco de dados não conectado — clique aqui para conectar.
   </div>
 
-  <div id="abasNav" style="display:flex;gap:8px;margin-bottom:16px;">
-    <button id="tabPedidosBtn" onclick="mostrarAba('pedidos')" style="background:var(--laranja);color:#fff;border-color:var(--laranja);font-weight:600;">Pedidos</button>
-    <button id="tabRelatorioBtn" onclick="mostrarAba('relatorio')">Relatório</button>
-    <button id="tabInvestidorBtn" onclick="mostrarAba('investidor')" style="display:none;">Saúde do Investimento</button>
+  <div id="abasNav" style="margin-bottom:16px;">
+    <div class="navtop" style="display:flex;gap:8px;margin-bottom:8px;">
+      <button id="tabInicioBtn" onclick="mostrarModulo('inicio')">Início</button>
+      <button id="tabFinanceiroBtn" onclick="mostrarModulo('financeiro')">Financeiro</button>
+      <button id="tabProdutosModBtn" onclick="mostrarModulo('produtos')" style="display:none;">Produtos</button>
+      <button id="tabLojasModBtn" onclick="mostrarModulo('lojas')" style="display:none;">Lojas</button>
+    </div>
+    <div class="navsub" id="navsubFinanceiro" style="display:none;gap:6px;padding:6px 0 6px 12px;border-left:3px solid var(--laranja);">
+      <button id="tabRelatorioBtn" onclick="mostrarAba('relatorio')" class="subtab">Relatório</button>
+      <button id="tabInvestidorBtn" onclick="mostrarAba('investidor')" class="subtab" style="display:none;">Saúde do Investimento</button>
+    </div>
+    <div class="navsub" id="navsubProdutos" style="display:none;gap:6px;padding:6px 0 6px 12px;border-left:3px solid var(--laranja);">
+      <button id="tabProdutosBtn" onclick="mostrarAba('produtos')" class="subtab">Cadastro de Produtos</button>
+      <button id="tabEstoqueBtn" onclick="mostrarAba('estoque')" class="subtab">Estoque</button>
+    </div>
   </div>
 
-  <div class="layout-grid">
+  <div class="panel" id="configPanel" style="display:none;">
+    <h2>Conexão com o banco de dados</h2>
+    <div class="hint">Cole aqui o link de conexão. Assim que salvo, o sistema passa a ler e gravar direto no banco de dados.</div>
+    <div class="grid">
+      <div class="field" style="grid-column: span 3;"><label>Link de conexão</label><input id="f_script_url" placeholder="https://..."></div>
+    </div>
+    <div class="row-btn">
+      <button onclick="salvarScriptUrl(this)">Salvar e conectar</button>
+    </div>
+  </div>
+
   <div class="layout-main">
+
+  <div id="painelInicio">
+
+  <div class="panel">
+    <div style="display:flex;justify-content:flex-start;">
+      <button type="button" class="primary" id="btnIncluirPedido" onclick="toggleFormNovoPedido()">NOVO PEDIDO</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalNovoPedido" onclick="if(event.target===this) toggleFormNovoPedido(false)">
+    <div class="modal-panel" id="corpoNovoPedido" style="max-width:820px;">
+    <span class="modal-close" onclick="toggleFormNovoPedido(false)">✕</span>
+    <h2 style="margin-top:0;">Novo pedido</h2>
+
+    <!-- 1º Informações do pedido -->
+    <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:8px;">1. Informações do pedido</label>
+    <div class="grid">
+      <div class="field"><label>Nº do pedido</label><input id="f_id" placeholder="Ex: 18789"></div>
+      <div class="field"><label>Data do pedido</label><input id="f_data_pedido" type="date"></div>
+      <div class="field"><label>Loja / Unidade Atacadão</label>
+        <input id="f_loja" list="lojas_list" placeholder="Comece a digitar para buscar..." onchange="sincronizarEnderecoFreteComLoja()">
+        <datalist id="lojas_list"></datalist>
+      </div>
+      <div class="field"><label>Prazo estimado de entrega</label><input id="f_data_entrega" type="date"></div>
+      <div class="field"><label>Nº da nota fiscal</label><input id="f_nota" placeholder="Ex: 957"></div>
+      <div class="field"><label>Data de emissão da NF</label><input id="f_emissao" type="date"></div>
+      <div class="field" data-role="diretor"><label>NF lançada no sistema do Atacadão?</label>
+        <select id="f_nf_lancada"><option value="">-</option><option value="sim">Sim</option><option value="nao">Não</option></select>
+      </div>
+    </div>
+
+    <!-- 2º Informações do produto -->
+    <div id="painelItensPedido" style="margin-top:14px;border-top:1px dashed var(--line);padding-top:14px;">
+      <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:8px;">2. Informações do produto</label>
+      <div class="grid" style="margin-bottom:6px;">
+        <div class="field">
+          <label>Tipo de item</label>
+          <select id="f_item_tipo" onchange="alternarTipoItemPedido()">
+            <option value="existente">Produto existente</option>
+            <option value="personalizado">Produto personalizado</option>
+          </select>
+        </div>
+        <div class="field" id="campoItemExistente" style="position:relative;">
+          <label>Produto</label>
+          <input id="f_item_produto_busca" placeholder="Comece a digitar o nome do produto..." autocomplete="off" oninput="filtrarProdutosPedido()" onfocus="filtrarProdutosPedido()" onblur="setTimeout(fecharSugestoesProdutoPedido, 150)">
+          <input type="hidden" id="f_item_produto" value="">
+          <div id="produtosPedidoSugestoes" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--line);border-radius:8px;margin-top:4px;max-height:230px;overflow-y:auto;z-index:40;box-shadow:0 8px 20px rgba(0,0,0,.14);"></div>
+        </div>
+        <div class="field" id="campoItemPersonalizado" style="display:none;">
+          <label>Descrição do produto personalizado</label>
+          <input id="f_item_descricao" placeholder="Ex: Banner 3x2m com logo especial">
+        </div>
+        <div class="field" id="campoItemValorPersonalizado" style="display:none;">
+          <label>Valor unitário (R$)</label>
+          <input id="f_item_valor_unitario" type="text" inputmode="numeric" placeholder="0,00" oninput="formatarMoedaDigitado(this); atualizarPrecoItemPedido();">
+        </div>
+        <div class="field" id="campoItemAltura" style="display:none;">
+          <label>Altura (cm)</label>
+          <input id="f_item_altura" type="number" min="1" step="1" inputmode="numeric" placeholder="Ex: 200" oninput="this.value=this.value.replace(/[^0-9]/g,''); atualizarPrecoItemPedido();">
+        </div>
+        <div class="field" id="campoItemLargura" style="display:none;">
+          <label>Largura (cm)</label>
+          <input id="f_item_largura" type="number" min="1" step="1" inputmode="numeric" placeholder="Ex: 100" oninput="this.value=this.value.replace(/[^0-9]/g,''); atualizarPrecoItemPedido();">
+        </div>
+        <div class="field">
+          <label>Quantidade</label>
+          <input id="f_item_quantidade" type="number" min="1" step="1" inputmode="numeric" placeholder="Ex: 10" oninput="this.value=this.value.replace(/[^0-9]/g,''); checarEstoqueItemPedido(); atualizarPrecoItemPedido();">
+        </div>
+      </div>
+      <div id="itemPedidoAviso" style="font-size:12px;margin-bottom:6px;min-height:16px;"></div>
+      <div id="itemPedidoPreco" style="font-size:13px;margin-bottom:10px;min-height:18px;color:var(--verde-esc);font-weight:600;"></div>
+      <div class="row-btn" style="justify-content:flex-start;margin-top:0;margin-bottom:12px;">
+        <button type="button" class="ghost" onclick="adicionarItemPedido()">+ Adicionar item</button>
+      </div>
+      <div id="listaItensPedido" style="font-size:13px;"><div style="color:var(--muted);font-size:12.5px;">Nenhum item adicionado ainda.</div></div>
+    </div>
+
+    <!-- 3º Instalação -->
+    <div id="painelInstalacaoPedido" style="margin-top:14px;border-top:1px dashed var(--line);padding-top:14px;">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <label style="font-size:12px;color:var(--muted);">Requer instalação?</label>
+        <button type="button" id="btnInstalacaoSim" onclick="selecionarInstalacao(true)">Sim</button>
+        <button type="button" id="btnInstalacaoNao" onclick="selecionarInstalacao(false)">Não</button>
+        <div class="field" id="campoValorInstalacao" style="display:none;margin:0;flex:1;min-width:160px;">
+          <input id="f_valor_instalacao" type="text" inputmode="numeric" placeholder="Valor da instalação (R$)" oninput="formatarMoedaDigitado(this); atualizarTotalPedido();">
+        </div>
+      </div>
+      <input type="hidden" id="f_requer_instalacao" value="">
+    </div>
+
+    <!-- 4º Frete -->
+    <div id="painelFretePedido" style="margin-top:14px;border-top:1px dashed var(--line);padding-top:14px;">
+      <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:8px;">4. Frete (opcional)</label>
+      <div class="grid">
+        <div class="field"><label>Local do frete (endereço de entrega)</label>
+          <input id="f_local_frete" placeholder="Selecione a loja acima para preencher automaticamente...">
+        </div>
+        <div class="field"><label>Valor do frete (R$)</label><input id="f_valor_frete" type="text" inputmode="numeric" placeholder="0,00" oninput="formatarMoedaDigitado(this); atualizarTotalPedido();"></div>
+      </div>
+    </div>
+
+    <!-- 5º Ajustes -->
+    <div id="painelAjustePedido" style="margin-top:14px;border-top:1px dashed var(--line);padding-top:14px;">
+      <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:8px;">5. Ajuste no valor final (opcional)</label>
+      <div class="grid">
+        <div class="field"><label>Tipo de ajuste</label>
+          <select id="f_ajuste_tipo" onchange="toggleCampoAjuste();">
+            <option value="">Nenhum</option>
+            <option value="acrescimo">Acréscimo</option>
+            <option value="desconto">Desconto</option>
+          </select>
+        </div>
+        <div class="field" id="campoValorAjuste" style="display:none;"><label>Valor do ajuste (R$)</label><input id="f_ajuste_valor" type="text" inputmode="numeric" placeholder="0,00" oninput="formatarMoedaDigitado(this); atualizarTotalPedido();"></div>
+      </div>
+    </div>
+
+    <div id="resumoTotalPedido" style="margin-top:14px;border-top:1px dashed var(--line);padding-top:14px;font-size:14px;">
+      <span style="color:var(--muted);">Total do pedido (soma dos itens + frete + instalação + ajuste):</span>
+      <strong id="resumoTotalPedidoValor" style="color:var(--verde-esc);margin-left:6px;">R$ 0,00</strong>
+    </div>
+
+    <!-- 6º Observações -->
+    <div style="margin-top:14px;border-top:1px dashed var(--line);padding-top:14px;">
+      <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:8px;">6. Observações</label>
+      <div class="grid">
+        <div class="field" data-role="diretor"><input id="f_obs" placeholder="Opcional"></div>
+      </div>
+    </div>
+
+    <div class="split" id="preview" style="display:none;"></div>
+    <div class="row-btn">
+      <button class="primary" onclick="addPedido(this)">Adicionar pedido</button>
+    </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Pedidos — acompanhamento operacional</h2>
+    <div class="hint">Clique em um card de status pra filtrar a lista abaixo. Também dá pra combinar com caminho, loja e busca.</div>
+    <div class="resumo-row" id="resumoStatusRow"></div>
+
+    <div class="grid" style="margin-bottom:14px;">
+      <div class="field"><label>Buscar por nº do pedido</label>
+        <div style="display:flex;gap:6px;">
+          <input id="f_filtro_id" placeholder="Ex: 18789" onkeydown="if(event.key==='Enter') aplicarFiltros();" style="flex:1;">
+          <button type="button" class="ghost" onclick="aplicarFiltros()" title="Buscar" style="padding:0 14px;">🔍</button>
+        </div>
+      </div>
+      <div class="field" id="campoFiltroCaminho"><label>Caminho</label>
+        <select id="f_filtro_caminho" onchange="aplicarFiltros()">
+          <option value="">Todos</option>
+          <option value="a">a — produto pronto</option>
+          <option value="b">b — personalizado</option>
+          <option value="c">c — sem estoque</option>
+        </select>
+      </div>
+      <div class="field"><label>Loja</label>
+        <input id="f_filtro_loja" list="lojas_list" placeholder="Todas as lojas — comece a digitar..." onchange="aplicarFiltros()">
+      </div>
+      <div class="field"><label>Status financeiro</label>
+        <select id="f_filtro_status" onchange="aplicarFiltros()"><option value="">Todos os status</option></select>
+      </div>
+      <div class="field" style="position:relative;">
+        <label>Filtrar por condição</label>
+        <button type="button" id="condFiltroBtn" onclick="toggleCondFiltro(event)" style="width:100%;text-align:left;background:#fff;">Nenhuma selecionada</button>
+        <div id="condFiltroPainel" style="display:none;position:absolute;top:100%;left:0;margin-top:4px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 14px;z-index:30;box-shadow:0 8px 20px rgba(0,0,0,.14);min-width:230px;">
+          <label style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;cursor:pointer;"><input type="checkbox" id="cond_producao" onchange="aplicarFiltros()"> ⚠️ Só produção atrasada</label>
+          <label style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;cursor:pointer;"><input type="checkbox" id="cond_material" onchange="aplicarFiltros()"> 🔴 Só material atrasado</label>
+        </div>
+      </div>
+      <div class="field" style="justify-content:flex-end;"><button class="ghost" onclick="limparFiltros()">Limpar filtros</button></div>
+    </div>
+    <div class="hint" id="filtroResumo"></div>
+
+    <div style="overflow-x:auto;">
+      <table class="tabela-op">
+        <thead>
+          <tr>
+            <th>Pedido</th><th>Loja</th><th>Caminho</th><th>Status</th><th>Há quanto tempo</th><th>Valor</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="listaOperacional"></tbody>
+      </table>
+    </div>
+    <div id="paginacaoOperacional" style="display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px;"></div>
+  </div>
+
+  <div class="modal-overlay" id="modalDetalhe" onclick="if(event.target===this) fecharDetalhePedido()">
+    <div class="modal-panel" id="modalDetalheConteudo"></div>
+  </div>
+
+
+  <div class="panel">
+    <h2>Outros módulos</h2>
+    <div class="hint">A tela completa de acompanhamento (com status de produção, entrega etc., seguindo o handoff) ainda está por construir. Por enquanto, veja também:</div>
+    <div class="cards">
+      <div class="metric" id="atalhoFinanceiro" style="cursor:pointer;border-left-color:var(--laranja);" onclick="mostrarModulo('financeiro')">
+        <div class="label">Financeiro</div>
+        <div class="value" style="font-size:14px;">Relatório e Saúde do Investimento</div>
+      </div>
+      <div class="metric" id="atalhoProdutos" style="cursor:pointer;border-left-color:var(--laranja);" onclick="mostrarModulo('produtos')">
+        <div class="label">Produtos</div>
+        <div class="value" style="font-size:14px;">Cadastro de produtos e Estoque</div>
+      </div>
+      <div class="metric" id="atalhoLojas" style="cursor:pointer;border-left-color:var(--laranja);" onclick="mostrarModulo('lojas')">
+        <div class="label">Lojas</div>
+        <div class="value" style="font-size:14px;">Cadastro de lojas do Atacadão</div>
+      </div>
+    </div>
+  </div>
+
+  </div>
 
   <div id="painelRelatorio" style="display:none;">
     <div class="cards" id="relatorioCards"></div>
@@ -149,7 +435,6 @@
   </div>
 
   <div id="painelInvestidor" style="display:none;">
-    <div class="cards" id="investidorResumoRapido" style="margin-bottom:16px;"></div>
     <div class="panel">
       <h2>Como está o investimento</h2>
       <div class="insight-box" id="investidorTexto">Carregando...</div>
@@ -167,70 +452,126 @@
     </div>
   </div>
 
-  <div id="painelPedidos">
+  <div id="painelProdutos" style="display:none;">
 
-  <div class="panel" id="configPanel" style="display:none;">
-    <h2>Conexão com o banco de dados</h2>
-    <div class="hint">Cole aqui o link de conexão. Assim que salvo, o sistema passa a ler e gravar direto no banco de dados.</div>
+  <div class="panel">
+    <h2>Novo produto</h2>
+    <div class="hint">Produtos padrão (com estoque) usam preço fixo ou faixas de quantidade; produtos personalizados usam preço por m² e não ficam em estoque.</div>
     <div class="grid">
-      <div class="field" style="grid-column: span 3;"><label>Link de conexão</label><input id="f_script_url" placeholder="https://..."></div>
+      <div class="field"><label>Nome</label><input id="pf_nome" placeholder="Ex: PLACA SANITÁRIO FEMININO"></div>
+      <div class="field"><label>Categoria</label><input id="pf_categoria" placeholder="Ex: SANITÁRIO"></div>
+      <div class="hint" style="grid-column:1/-1;">O SKU (categoria + número) é gerado automaticamente ao salvar — não precisa digitar.</div>
+      <div class="field"><label>Tipo de precificação</label>
+        <select id="pf_tipo" onchange="atualizarCamposTipoProduto()">
+          <option value="fixo">Fixo</option>
+          <option value="faixa_quantidade">Faixa de quantidade</option>
+          <option value="area">Por m² (área)</option>
+        </select>
+      </div>
+      <div class="field" id="pf_campo_preco_padrao"><label>Preço padrão (R$)</label><input id="pf_preco_padrao" type="text" inputmode="numeric" placeholder="0,00" oninput="formatarMoedaDigitado(this)"></div>
+      <div class="field" id="pf_campo_preco_m2" style="display:none;"><label>Preço por m² (R$)</label><input id="pf_preco_m2" type="text" inputmode="numeric" placeholder="0,00" oninput="formatarMoedaDigitado(this)"></div>
+      <div class="field"><label>Unidade de medida</label><input id="pf_unidade" placeholder="Ex: unidade, m²"></div>
+      <div class="field"><label>Produto fica pronto em estoque?</label>
+        <select id="pf_estoque_pronto">
+          <option value="sim">Sim — produto padrão</option>
+          <option value="nao">Não — personalizado</option>
+        </select>
+      </div>
+      <div class="field"><label>Quantidade em estoque (inicial)</label><input id="pf_quantidade_estoque" type="number" placeholder="0"></div>
+      <div class="field"><label>Estoque mínimo</label><input id="pf_estoque_minimo" type="number" placeholder="Opcional"></div>
+      <div class="field" style="grid-column: span 2;"><label>Especificações de produção</label><input id="pf_especificacoes" placeholder="Opcional"></div>
+      <div class="field" style="grid-column: span 3;"><label>Observações</label><input id="pf_observacoes" placeholder="Opcional"></div>
     </div>
+
+    <div id="pf_bloco_faixas" style="display:none;margin-top:14px;border-top:1px dashed var(--line);padding-top:14px;">
+      <div class="hint" style="margin-bottom:10px;">Faixas de quantidade — defina os intervalos e o preço unitário de cada um. Deixe a última faixa sem "até" pra representar "em diante".</div>
+      <div id="pf_faixas_lista"></div>
+      <button type="button" class="ghost" onclick="adicionarLinhaFaixa('pf_faixas_lista')" style="margin-top:8px;">+ Adicionar faixa</button>
+    </div>
+
     <div class="row-btn">
-      <button onclick="salvarScriptUrl(this)">Salvar e conectar</button>
+      <button class="primary" onclick="criarProduto(this)">Adicionar produto</button>
     </div>
   </div>
 
   <div class="panel">
-    <h2>Novo pedido</h2>
-    <div class="hint">Preencha o que já souber agora. O status do pedido é calculado sozinho, sem depender do sistema da gráfica.</div>
-    <div class="grid">
-      <div class="field"><label>Nº do pedido</label><input id="f_id" placeholder="Ex: 18789"></div>
-      <div class="field"><label>Data do pedido</label><input id="f_data_pedido" type="date"></div>
-      <div class="field"><label>Loja / Unidade Atacadão</label>
-        <input id="f_loja" list="lojas_list" placeholder="Comece a digitar para buscar...">
-        <datalist id="lojas_list"></datalist>
-      </div>
-      <div class="field"><label>Valor do pedido (R$)</label><input id="f_valor" type="text" inputmode="numeric" placeholder="0,00" oninput="formatarMoedaDigitado(this); updatePreview();"></div>
-      <div class="field"><label>Prazo estimado de entrega</label><input id="f_data_entrega" type="date"></div>
-      <div class="field"><label>Nº da nota fiscal</label><input id="f_nota" placeholder="Ex: 957"></div>
-      <div class="field"><label>Data de emissão da NF</label><input id="f_emissao" type="date"></div>
-      <div class="field" data-role="diretor"><label>NF lançada no sistema do Atacadão?</label>
-        <select id="f_nf_lancada"><option value="">-</option><option value="sim">Sim</option><option value="nao">Não</option></select>
-      </div>
-      <div class="field" data-role="diretor"><label>Observações</label><input id="f_obs" placeholder="Opcional"></div>
-    </div>
-    <div class="split" id="preview" style="display:none;"></div>
-    <div class="row-btn">
-      <button class="primary" onclick="addPedido(this)">Adicionar pedido</button>
-    </div>
-  </div>
-
-  <div class="panel">
-    <h2>Pedidos</h2>
+    <h2>Produtos</h2>
     <div class="grid" style="margin-bottom:14px;">
-      <div class="field"><label>Buscar por nº do pedido</label><input id="f_filtro_id" placeholder="Ex: 18789" oninput="aplicarFiltros()"></div>
-      <div class="field"><label>Filtrar por status</label>
-        <select id="f_filtro_status" onchange="aplicarFiltros()"><option value="">Todos os status</option></select>
+      <div class="field" style="grid-column: span 3;"><label>Buscar por nome, SKU ou categoria</label>
+        <input id="pf_busca" placeholder="Comece a digitar..." oninput="renderizarProdutos()">
       </div>
-      <div class="field" style="position:relative;">
-        <label>Filtrar por condição</label>
-        <button type="button" id="condFiltroBtn" onclick="toggleCondFiltro(event)" style="width:100%;text-align:left;background:#fff;">Nenhuma selecionada</button>
-        <div id="condFiltroPainel" style="display:none;position:absolute;top:100%;left:0;margin-top:4px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 14px;z-index:30;box-shadow:0 8px 20px rgba(0,0,0,.14);min-width:230px;">
-          <label style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;cursor:pointer;"><input type="checkbox" id="cond_producao" onchange="aplicarFiltros()"> ⚠️ Só produção atrasada</label>
-          <label style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;cursor:pointer;"><input type="checkbox" id="cond_material" onchange="aplicarFiltros()"> 🔴 Só material atrasado</label>
-          <label style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;cursor:pointer;"><input type="checkbox" id="cond_entregue" onchange="aplicarFiltros()"> 📦 Só material entregue</label>
-        </div>
-      </div>
-      <div class="field" style="justify-content:flex-end;"><button class="ghost" onclick="limparFiltros()">Limpar filtros</button></div>
     </div>
-    <div class="hint" id="filtroResumo"></div>
-    <div id="lista"></div>
+    <div class="hint" id="produtosResumo"></div>
+    <div id="listaProdutos"></div>
   </div>
+
+  </div>
+
+  <div id="painelLojas" style="display:none;">
+
+  <div class="panel">
+    <h2>Nova loja</h2>
+    <div class="grid">
+      <div class="field" style="grid-column: span 3;"><label>Nome</label><input id="lf_nome" placeholder="Ex: Atacadão S.A. Sorocaba / Nome do contato"></div>
+      <div class="field"><label>Nome do contato</label><input id="lf_contato_nome" placeholder="Opcional"></div>
+      <div class="field"><label>Telefone do contato</label><input id="lf_contato_telefone" placeholder="Opcional"></div>
+      <div class="field"><label>CNPJ</label><input id="lf_cnpj" placeholder="Opcional"></div>
+      <div class="field" style="grid-column: span 2;"><label>Endereço</label><input id="lf_endereco" placeholder="Opcional"></div>
+      <div class="field"><label>Cidade</label><input id="lf_cidade" placeholder="Opcional"></div>
+      <div class="field"><label>Estado</label><input id="lf_estado" placeholder="Ex: SP" maxlength="2"></div>
+      <div class="field"><label>CEP</label><input id="lf_cep" placeholder="Opcional"></div>
+    </div>
+    <div class="row-btn">
+      <button class="primary" onclick="criarLoja(this)">Adicionar loja</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Lojas</h2>
+    <div class="grid" style="margin-bottom:14px;">
+      <div class="field" style="grid-column: span 3;"><label>Buscar por nome ou cidade</label>
+        <input id="lf_busca" placeholder="Comece a digitar..." oninput="renderizarLojasAba()">
+      </div>
+    </div>
+    <div class="hint" id="lojasResumo"></div>
+    <div id="listaLojasAba"></div>
+  </div>
+
+  </div>
+
+  <div id="painelEstoque" style="display:none;">
+
+  <div class="panel">
+    <h2>Movimentar estoque</h2>
+    <div class="hint">Lança entrada ou saída manual de um produto padrão. O saldo é recalculado automaticamente.</div>
+    <div class="grid">
+      <div class="field" style="grid-column: span 2;"><label>Produto</label>
+        <input id="ef_sku" list="produtos_sku_list" placeholder="Comece a digitar o SKU ou nome...">
+        <datalist id="produtos_sku_list"></datalist>
+      </div>
+      <div class="field"><label>Tipo</label>
+        <select id="ef_tipo"><option value="Entrada">Entrada</option><option value="Saida">Saída</option></select>
+      </div>
+      <div class="field"><label>Quantidade</label><input id="ef_quantidade" type="number" min="1" placeholder="0"></div>
+      <div class="field" style="grid-column: span 3;"><label>Observação</label><input id="ef_observacao" placeholder="Opcional"></div>
+    </div>
+    <div class="row-btn">
+      <button class="primary" onclick="movimentarEstoque(this)">Lançar movimentação</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Histórico de movimentações</h2>
+    <div class="hint" id="estoqueResumo"></div>
+    <div id="listaEstoque"></div>
+  </div>
+
   </div>
   </div>
 
-  <div class="layout-sidebar" id="walletSidebar" style="display:none;">
-    <div class="wallet-card">
+  <div class="modal-overlay" id="modalCarteira" onclick="if(event.target===this) toggleWalletModal(false)">
+    <div class="modal-panel wallet-modal-panel" style="max-width:420px;">
+      <span class="modal-close" onclick="toggleWalletModal(false)">✕</span>
       <div class="wallet-saldo-label">Carteira do investidor</div>
       <div class="wallet-saldo-valor" id="carteiraSaldo">—</div>
       <div class="wallet-hint">O sinal de cada pedido é coberto automaticamente por este saldo, na ordem em que os pedidos entraram.</div>
@@ -310,6 +651,12 @@ function toISO(d){
   if(s.includes('/')){ const [dd,m,y]=s.split('/'); return y+'-'+m+'-'+dd; }
   return s;
 }
+function fmtDataHora(d){
+  if(!d) return '-';
+  const dt = new Date(d);
+  if(isNaN(dt.getTime())) return fmtAny(d);
+  return dt.toLocaleDateString('pt-BR') + ' ' + dt.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+}
 function classifyServerStatus(label){
   if(!label) return 'wait';
   if(label.indexOf('✅')!==-1) return 'ok';
@@ -317,26 +664,68 @@ function classifyServerStatus(label){
   return 'wait';
 }
 function normalizeServerPedido(row){
+  let statusOperacional = null;
+  let caminho = null;
+  try{
+    const meta = typeof row.metadata==='string' ? JSON.parse(row.metadata) : row.metadata;
+    if(meta && meta.status_operacional) statusOperacional = meta.status_operacional;
+    if(meta && meta.caminho) caminho = meta.caminho;
+  }catch(e){}
   return {
-    id: 'srv-' + row.idPedido,
-    idPedido: row.idPedido,
-    loja: row.loja,
-    dataPedido: row.dataPedido,
+    id: 'srv-' + row.numero_pedido,
+    idPedido: row.numero_pedido,
+    loja: row.loja_id, // nome resolvido depois, quando a lista de lojas carrega
+    dataPedido: row.data_pedido,
     valor: parseBRL(row.valor),
-    dataSinal: row.dataSinal,
-    nota: row.nota,
-    emissao: row.emissao,
-    nfLancada: row.nfLancada==='Sim'?'sim':(row.nfLancada==='Não'?'nao':''),
+    dataSinal: row.data_sinal,
+    nota: row.numero_nota,
+    emissao: row.data_emissao_nf,
+    nfLancada: row.nf_lancada ? 'sim' : 'nao',
     obs: row.observacoes,
-    dataPgtoLoja: row.dataPgtoLoja,
-    dataRepasseInvestidor: row.dataRepasseInvestidor,
-    dataEntrega: row.dataEntrega,
-    dataComissaoSinal: row.dataComissaoSinal,
-    dataComissaoRepasse: row.dataComissaoRepasse,
-    dataEntregaReal: row.dataEntregaReal,
+    dataPgtoLoja: row.data_pgto_loja,
+    dataRepasseInvestidor: row.data_repasse_investidor,
+    dataEntrega: row.data_entrega_estimada,
+    dataEntregaReal: row.data_entrega_real,
+    statusOperacional,
+    caminho,
+    requerInstalacao: !!row.requer_instalacao,
+    criadoPor: row.criado_por,
     _server: row
   };
 }
+
+const CAMINHO_INFO = {
+  a: {label:'A — Produto pronto', explicacao:'A — produto pronto, saiu direto do estoque'},
+  b: {label:'B — Personalizado', explicacao:'B — personalizado, passou por atendimento humano'},
+  c: {label:'C — Sem estoque', explicacao:'C — produto padrão sem estoque, foi para produção'}
+};
+function sequenciaOperacional(p){
+  const meio = p.caminho === 'b'
+    ? [{key:'atend_humano', label:'Em atendimento humano', emoji:'🧑‍💼'}, {key:'producao', label:'Em produção', emoji:'🏭'}]
+    : p.caminho === 'c'
+      ? [{key:'producao', label:'Em produção', emoji:'🏭'}]
+      : []; // caminho 'a' pula produção
+  const steps = [
+    ...meio,
+    {key:'pronto_envio', label:'Pronto para envio', emoji:'📦'},
+    {key:'transporte', label:'Em transporte', emoji:'🚚'}
+  ];
+  if(p.requerInstalacao) steps.push({key:'instalacao', label:'Aguardando instalação', emoji:'🔧'});
+  return steps;
+}
+function proximoEstagio(p){
+  const seq = sequenciaOperacional(p);
+  if(!p.statusOperacional) return seq[0] || null; // ainda em "Recebido" — primeiro estágio da sequência dele
+  const idx = seq.findIndex(s => s.key === p.statusOperacional);
+  if(idx === -1) return null; // estágio atual fora da sequência esperada (foi corrigido manualmente) — não oferece avançar
+  return seq[idx + 1] || null; // não tem próximo manual: só falta a entrega automática
+}
+function estagioForaDaSequencia(p){
+  if(!p.statusOperacional) return false;
+  const seq = sequenciaOperacional(p);
+  return seq.findIndex(s => s.key === p.statusOperacional) === -1;
+}
+function caminhoDe(p){ return p.caminho || null; }
 function hojeStr(){ return new Date().toISOString().slice(0,10); }
 function diffDays(dateStr){
   if(!dateStr) return null;
@@ -368,45 +757,117 @@ function comissaoMetade(p){
 function statusSinalDe(p){
   // o sinal agora é coberto pela carteira do investidor (fila acumulada),
   // não é mais uma data marcada pedido a pedido
-  if(p._server) return p._server.statusSinal || 'Pendente';
+  if(p._server) return p._server.status_sinal || 'Pendente';
   return p.dataSinal ? 'Pago' : 'Pendente';
 }
 function comissaoPagaGVH(p){
   const metade = comissaoMetade(p);
   const sinalPago = statusSinalDe(p) === 'Pago';
-  return (sinalPago?metade:0) + (p.dataComissaoRepasse?metade:0);
+  // a comissão agora é automática: a segunda metade é considerada paga quando
+  // o repasse ao investidor acontece (não existe mais um lançamento manual de
+  // data de comissão separado)
+  return (sinalPago?metade:0) + (p.dataRepasseInvestidor?metade:0);
 }
 function comissaoFaltaGVH(p){
   return (comissaoMetade(p)*2) - comissaoPagaGVH(p);
 }
 
-function calcStatus(p){
-  if(p.dataRepasseInvestidor) return {label:'Concluído', emoji:'✅', cls:'ok'};
-  if(p.dataPgtoLoja) return {label:'Loja Pagou — Aguardando Repasse Investidor', emoji:'🟠', cls:'wait'};
+function calcStatusFinanceiro(p){
+  if(p.dataRepasseInvestidor) return {key:'concluido', label:'Concluído', emoji:'✅', cls:'ok'};
+  if(p.dataPgtoLoja) return {key:'loja_pagou', label:'Loja Pagou — Aguardando Repasse Investidor', emoji:'🟠', cls:'wait'};
   if(p.nfLancada==='sim'){
     const limite = addDays(p.emissao, PRAZO_PGTO_LOJA);
-    if(limite && new Date(hojeStr()+'T00:00:00') > limite) return {label:'Pagamento Atrasado', emoji:'🔴', cls:'risk'};
-    return {label:'NF Lançada — Aguardando Pgto Loja', emoji:'🟣', cls:'wait'};
+    if(limite && new Date(hojeStr()+'T00:00:00') > limite) return {key:'atrasado', label:'Pagamento Atrasado', emoji:'🔴', cls:'risk'};
+    return {key:'nf_lancada', label:'NF Lançada — Aguardando Pgto Loja', emoji:'🟣', cls:'wait'};
   }
   if(p.emissao){
     if(p.dataEntregaReal){
       const diasU = diasUteisDesde(p.dataEntregaReal);
-      if(diasU!==null && diasU>RISCO_DIAS) return {label:'RISCO: NF não lançada ('+diasU+'d úteis desde a entrega)', emoji:'🔴', cls:'risk'};
+      if(diasU!==null && diasU>RISCO_DIAS) return {key:'risco', label:'RISCO: NF não lançada ('+diasU+'d úteis desde a entrega)', emoji:'🔴', cls:'risk'};
     }
-    return {label:'NF Emitida — Aguardando Lançamento', emoji:'🟢', cls:'wait'};
+    return {key:'nf_emitida', label:'NF Emitida — Aguardando Lançamento', emoji:'🟢', cls:'wait'};
   }
   if(p.dataSinal){
-    if(p.dataEntregaReal) return {label:'Material entregue sem NF', emoji:'🔴', cls:'risk'};
-    return {label:'Em Produção', emoji:'🔵', cls:'wait'};
+    if(p.dataEntregaReal) return {key:'entregue_sem_nf', label:'Material Entregue sem NF', emoji:'🔴', cls:'risk'};
+    return {key:'sinal_pago', label:'Sinal Pago — Aguardando NF', emoji:'🔵', cls:'wait'};
   }
-  return {label:'Sinal Pendente', emoji:'🟡', cls:'wait'};
+  return {key:'sinal_pendente', label:'Sinal Pendente', emoji:'🟡', cls:'wait'};
+}
+
+// Estágios operacionais que ainda não têm gatilho automático (personalização,
+// produção, expedição, transporte, instalação) — dependem de acompanhamento
+// manual até a esteira operacional (Fase 12+ do handoff) existir de verdade.
+const ESTAGIOS_OPERACIONAIS_MANUAIS = [
+  {key:'atend_humano', label:'Em atendimento humano', emoji:'🧑‍💼'},
+  {key:'producao', label:'Em produção', emoji:'🏭'},
+  {key:'pronto_envio', label:'Pronto para envio', emoji:'📦'},
+  {key:'transporte', label:'Em transporte', emoji:'🚚'},
+  {key:'instalacao', label:'Aguardando instalação', emoji:'🔧'}
+];
+
+function calcStatusOperacional(p){
+  if(p.dataRepasseInvestidor && p.dataEntregaReal) return {key:'concluido', label:'Concluído', emoji:'✅', cls:'ok'};
+  if(p.dataEntregaReal) return {key:'entregue', label:'Entregue', emoji:'📬', cls:'ok'};
+  const manual = ESTAGIOS_OPERACIONAIS_MANUAIS.find(e=>e.key===p.statusOperacional);
+  if(manual) return {key:manual.key, label:manual.label, emoji:manual.emoji, cls:'wait'}; // ex.: personalizado cai em "atend_humano" mesmo com sinal pendente
+  return {key:'recebido', label:'Recebido', emoji:'📥', cls:'wait'}; // nem sinal pago, nem estágio manual definido ainda
+}
+
+
+function toggleFormNovoPedido(abrir){
+  const modal = document.getElementById('modalNovoPedido');
+  if(abrir===undefined) abrir = !modal.classList.contains('aberto');
+  modal.classList.toggle('aberto', abrir);
+}
+
+function selecionarInstalacao(sim){
+  document.getElementById('f_requer_instalacao').value = sim ? 'sim' : 'nao';
+  document.getElementById('btnInstalacaoSim').classList.toggle('primary', sim);
+  document.getElementById('btnInstalacaoNao').classList.toggle('primary', !sim);
+  document.getElementById('campoValorInstalacao').style.display = sim ? '' : 'none';
+  if(!sim) document.getElementById('f_valor_instalacao').value = '';
+  atualizarTotalPedido();
+}
+
+function limparSelecaoInstalacao(){
+  document.getElementById('f_requer_instalacao').value = '';
+  document.getElementById('btnInstalacaoSim').classList.remove('primary');
+  document.getElementById('btnInstalacaoNao').classList.remove('primary');
+  document.getElementById('campoValorInstalacao').style.display = 'none';
+  document.getElementById('f_valor_instalacao').value = '';
+}
+
+function toggleCampoAjuste(){
+  const tipo = document.getElementById('f_ajuste_tipo').value;
+  document.getElementById('campoValorAjuste').style.display = tipo ? '' : 'none';
+  if(!tipo) document.getElementById('f_ajuste_valor').value = '';
+}
+
+function calcularValorTotalPedido(){
+  const valorProduto = itensNovoPedido.reduce((soma, it) => soma + (Number(it.valorTotal) || 0), 0);
+  const valorFrete = parseBRL(document.getElementById('f_valor_frete').value);
+  const requerInstalacao = document.getElementById('f_requer_instalacao').value === 'sim';
+  const valorInstalacao = requerInstalacao ? parseBRL(document.getElementById('f_valor_instalacao').value) : 0;
+  const ajusteTipo = document.getElementById('f_ajuste_tipo').value;
+  let ajusteValor = ajusteTipo ? parseBRL(document.getElementById('f_ajuste_valor').value) : 0;
+  if(ajusteTipo === 'desconto') ajusteValor = -Math.abs(ajusteValor);
+  else if(ajusteTipo === 'acrescimo') ajusteValor = Math.abs(ajusteValor);
+  else ajusteValor = 0;
+  const total = valorProduto + valorFrete + valorInstalacao + ajusteValor;
+  return { valorProduto, valorFrete, requerInstalacao, valorInstalacao, ajusteValor, total };
+}
+
+function atualizarTotalPedido(){
+  const { total } = calcularValorTotalPedido();
+  document.getElementById('resumoTotalPedidoValor').textContent = fmt(total);
+  updatePreview();
 }
 
 function updatePreview(){
-  const valor = parseBRL(document.getElementById('f_valor').value);
+  const { total } = calcularValorTotalPedido();
   const preview = document.getElementById('preview');
-  if(!valor || perfilAtual==='assistente'){ preview.style.display='none'; preview.innerHTML=''; return; }
-  const split = calcSplit({valor});
+  if(!total || ['assistente','designer'].includes(perfilAtual)){ preview.style.display='none'; preview.innerHTML=''; return; }
+  const split = calcSplit({valor: total});
   preview.style.display='grid';
   preview.innerHTML = `
     <div><div class="k">Sinal do investidor (50%)</div><div class="v">${fmt(split.sinal)}</div></div>
@@ -416,9 +877,6 @@ function updatePreview(){
     <div><div class="k">Líquido p/ Gráfica</div><div class="v">${fmt(split.liquidoGrafica)}</div></div>
   `;
 }
-
-const SEED_PEDIDOS = [{"idPedido": "18789", "loja": "ATACADÃO S.A. PETROLINA / Leandro", "dataPedido": "2026-08-11", "valor": 8500.0, "dataSinal": "2026-08-11", "nota": "-", "emissao": null, "nfLancada": "", "statusLivre": "", "obs": "", "dataPgtoLoja": null, "dataRepasseInvestidor": null}, {"idPedido": "18854", "loja": "ATACADÃO S.A. PETROLINA / Leandro", "dataPedido": "2026-08-11", "valor": 11980.0, "dataSinal": "2026-08-11", "nota": "-", "emissao": null, "nfLancada": "", "statusLivre": "", "obs": "", "dataPgtoLoja": null, "dataRepasseInvestidor": null}, {"idPedido": "17775", "loja": "Atacadão S.A. Cascavel / Lucas", "dataPedido": "2026-08-11", "valor": 5800.0, "dataSinal": "2026-08-11", "nota": "-", "emissao": null, "nfLancada": "", "statusLivre": "", "obs": "", "dataPgtoLoja": null, "dataRepasseInvestidor": null}, {"idPedido": "18840", "loja": "WMS SUPERMERCADOS DO BRASIL LTDA. CARAGUATATUBA / Vanessa", "dataPedido": "2026-08-11", "valor": 20604.0, "dataSinal": "2026-08-11", "nota": "957, 958, 959, 960, 961, 962", "emissao": "2026-08-11", "nfLancada": "nao", "statusLivre": "", "obs": "", "dataPgtoLoja": null, "dataRepasseInvestidor": null}, {"idPedido": "18798", "loja": "WMS SUPERMERCADOS DO BRASIL LTDA. SOROCABA ITAVUVU / Fernanda", "dataPedido": "2026-08-12", "valor": 13850.0, "dataSinal": "2026-08-12", "nota": "-", "emissao": null, "nfLancada": "", "statusLivre": "", "obs": "", "dataPgtoLoja": null, "dataRepasseInvestidor": null}, {"idPedido": "18797", "loja": "WMS SUPERMERCADOS DO BRASIL LTDA. SOROCABA ITAVUVU / Fernanda", "dataPedido": "2026-08-12", "valor": 2000.0, "dataSinal": "2026-08-12", "nota": "-", "emissao": null, "nfLancada": "", "statusLivre": "", "obs": "", "dataPgtoLoja": null, "dataRepasseInvestidor": null}, {"idPedido": "18836", "loja": "WMS SUPERMERCADOS DO BRASIL LTDA SÃO CARLOS / Licia", "dataPedido": "2026-08-12", "valor": 500.0, "dataSinal": "2026-08-12", "nota": "-", "emissao": null, "nfLancada": "", "statusLivre": "", "obs": "", "dataPgtoLoja": null, "dataRepasseInvestidor": null}, {"idPedido": "18839", "loja": "WMS SUPERMERCADOS DO BRASIL LTDA CAMPINAS DOM PEDRO / Tatiane", "dataPedido": "2026-08-12", "valor": 612.0, "dataSinal": "2026-08-12", "nota": "-", "emissao": null, "nfLancada": "", "statusLivre": "", "obs": "", "dataPgtoLoja": null, "dataRepasseInvestidor": null}, {"idPedido": "18844", "loja": "WMS SUPERMERCADOS DO BRASIL LTDA. . SANTO ANDRÉ AVENIDA DOS ESTADOS / Lucelia", "dataPedido": "2026-08-12", "valor": 795.0, "dataSinal": "2026-08-12", "nota": "-", "emissao": null, "nfLancada": "", "statusLivre": "", "obs": "", "dataPgtoLoja": null, "dataRepasseInvestidor": null}, {"idPedido": "18787", "loja": "WMS SUPERMERCADOS DO BRASIL LTDA. . SANTO ANDRÉ AVENIDA DOS ESTADOS / Lucelia", "dataPedido": "2026-08-12", "valor": 2700.0, "dataSinal": "2026-08-12", "nota": "-", "emissao": null, "nfLancada": "", "statusLivre": "", "obs": "", "dataPgtoLoja": null, "dataRepasseInvestidor": null}, {"idPedido": "18856", "loja": "WMS SUPERMERCADOS DO BRASIL LTDA - Piracicaba Paschoal Padovani / Larissa", "dataPedido": "2026-08-12", "valor": 2670.1, "dataSinal": "2026-08-12", "nota": "-", "emissao": null, "nfLancada": "", "statusLivre": "", "obs": "", "dataPgtoLoja": null, "dataRepasseInvestidor": null}, {"idPedido": "18852", "loja": "WMS SUPERMERCADOS DO BRASIL LTDA BARRETOS / Erica", "dataPedido": "2026-08-12", "valor": 3720.0, "dataSinal": "2026-08-12", "nota": "-", "emissao": null, "nfLancada": "", "statusLivre": "", "obs": "", "dataPgtoLoja": null, "dataRepasseInvestidor": null}, {"idPedido": "18783", "loja": "WMS SUPERMERCADOS DO BRASIL LTDA SÃO JOSÉ DOS CAMPOS JK / jOSEANE", "dataPedido": "2026-08-12", "valor": 3481.6, "dataSinal": "2026-08-12", "nota": "-", "emissao": null, "nfLancada": "", "statusLivre": "", "obs": "", "dataPgtoLoja": null, "dataRepasseInvestidor": null}, {"idPedido": "18851", "loja": "WMS SUPERMERCADOS DO BRASIL LTDA - JACAREÍ 814 CENTRO/ Danieli", "dataPedido": "2026-08-12", "valor": 600.0, "dataSinal": "2026-08-12", "nota": "-", "emissao": null, "nfLancada": "", "statusLivre": "", "obs": "", "dataPgtoLoja": null, "dataRepasseInvestidor": null}, {"idPedido": "18822", "loja": "WMS SUPERMERCADOS DO BRASIL LTDA SÃO CARLOS / Licia", "dataPedido": "2026-08-13", "valor": 2931.0, "dataSinal": "2026-08-13", "nota": "-", "emissao": null, "nfLancada": "", "statusLivre": "", "obs": "", "dataPgtoLoja": null, "dataRepasseInvestidor": null}, {"idPedido": "18849", "loja": "WMS SUPERMERCADOS DO BRASIL LTDA. TAMBORÉ / Camila", "dataPedido": "2026-08-13", "valor": 630.0, "dataSinal": "2026-08-13", "nota": "-", "emissao": null, "nfLancada": "", "statusLivre": "", "obs": "", "dataPgtoLoja": null, "dataRepasseInvestidor": null}, {"idPedido": "18824", "loja": "WMS SUPERMERCADOS DO BRASIL LTDA CARAPICUÍBA KM 21 / Nicolas", "dataPedido": "2026-08-13", "valor": 1008.0, "dataSinal": "2026-08-13", "nota": "-", "emissao": null, "nfLancada": "", "statusLivre": "", "obs": "", "dataPgtoLoja": null, "dataRepasseInvestidor": null}, {"idPedido": "18796", "loja": "WMS SUPERMERCADOS DO BRASIL LTDA Sumaré / Naiara", "dataPedido": "2026-08-13", "valor": 1920.0, "dataSinal": "2026-08-13", "nota": "-", "emissao": null, "nfLancada": "", "statusLivre": "", "obs": "", "dataPgtoLoja": null, "dataRepasseInvestidor": null}, {"idPedido": "18821", "loja": "WMS SUPERMERCADOS DO BRASIL LTDA ATIBAIA / Erica", "dataPedido": "2026-08-13", "valor": 2400.0, "dataSinal": "2026-08-13", "nota": "-", "emissao": null, "nfLancada": "", "statusLivre": "", "obs": "", "dataPgtoLoja": null, "dataRepasseInvestidor": null}, {"idPedido": "18820", "loja": "WMS SUPERMERCADOS DO BRASIL LTDA ATIBAIA / Erica", "dataPedido": "2026-08-13", "valor": 90.0, "dataSinal": "2026-08-13", "nota": "-", "emissao": null, "nfLancada": "", "statusLivre": "", "obs": "", "dataPgtoLoja": null, "dataRepasseInvestidor": null}, {"idPedido": "18776", "loja": "WMS SUPERMERCADOS DO BRASIL LTDA Sumaré / Naiara", "dataPedido": "2026-08-13", "valor": 1620.0, "dataSinal": "2026-08-13", "nota": "-", "emissao": null, "nfLancada": "", "statusLivre": "", "obs": "", "dataPgtoLoja": null, "dataRepasseInvestidor": null}];
-const SEED_FLAG_KEY = 'seed_pedidos_planilha_v1';
 
 const SCRIPT_URL_KEY = 'apps_script_url';
 const SESSION_KEY = 'sessao_usuario_perfil';
@@ -464,7 +922,7 @@ async function tentarLogin(btn){
   try{
     const res = await fetch(url, {
       method:'POST',
-      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      headers:{'Content-Type':'application/json'},
       body: JSON.stringify({action:'login', email, senha})
     });
     const json = await res.json();
@@ -491,7 +949,7 @@ async function sair(){
       if(url){
         fetch(url, {
           method:'POST',
-          headers:{'Content-Type':'text/plain;charset=utf-8'},
+          headers:{'Content-Type':'application/json'},
           body: JSON.stringify({action:'logout', token: sessaoToken})
         }).catch(()=>{});
       }
@@ -516,19 +974,33 @@ function aplicarPermissoesUI(){
 function entrarNoSistema(){
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('appContent').style.display='block';
-  const nomesPerfil = {diretor:'Diretor', grafica:'Gráfica', assistente:'Assistente'};
+  const nomesPerfil = {diretor:'Diretor', grafica:'Gráfica', assistente:'Assistente', designer:'Designer'};
   document.getElementById('userLabel').textContent = usuarioAtual + ' · ' + (nomesPerfil[perfilAtual] || perfilAtual);
-  document.getElementById('tabRelatorioBtn').style.display = (perfilAtual==='assistente') ? 'none' : '';
+  const semFinanceiro = ['assistente','designer'].includes(perfilAtual);
+  document.getElementById('tabRelatorioBtn').style.display = semFinanceiro ? 'none' : '';
   document.getElementById('tabInvestidorBtn').style.display = (perfilAtual==='diretor') ? '' : 'none';
-  document.getElementById('walletSidebar').style.display = (perfilAtual==='assistente') ? 'none' : '';
+  document.getElementById('tabFinanceiroBtn').style.display = semFinanceiro ? 'none' : '';
+  document.getElementById('atalhoFinanceiro').style.display = semFinanceiro ? 'none' : '';
+  const podeGerenciarCadastros = ['diretor','grafica'].includes(perfilAtual);
+  document.getElementById('tabProdutosModBtn').style.display = podeGerenciarCadastros ? '' : 'none';
+  document.getElementById('tabLojasModBtn').style.display = podeGerenciarCadastros ? '' : 'none';
+  document.getElementById('atalhoProdutos').style.display = podeGerenciarCadastros ? '' : 'none';
+  document.getElementById('atalhoLojas').style.display = podeGerenciarCadastros ? '' : 'none';
+  document.getElementById('walletBtn').style.display = semFinanceiro ? 'none' : '';
+  document.getElementById('btnIncluirPedido').style.display = (perfilAtual==='designer') ? 'none' : '';
   aplicarPermissoesUI();
   load();
+  carregarProdutos();
   document.getElementById('f_data_pedido').value = hojeStr();
+  mostrarAba('inicio');
 }
 
-const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyQz5g2jRLTbDcAl1rbuaTC2_wzrCcM0-VA99PyMMEwu8KoYAJGKv-rjUcdmzgrAB-kAg/exec';
+const DEFAULT_SCRIPT_URL = 'https://gvh-n8n.kjb64n.easypanel.host/webhook/ponte';
 let scriptUrl = null;
 let usingServer = false;
+let lojasPorId = {};
+let lojasCompletas = [];
+let itensNovoPedido = [];
 let pollTimer = null;
 const INTERVALO_ATUALIZACAO_MS = 30000; // busca mudanças no banco de dados a cada 30s
 
@@ -542,6 +1014,11 @@ async function getScriptUrl(){
 function toggleConfigPanel(){
   const painel = document.getElementById('configPanel');
   painel.style.display = (painel.style.display==='none') ? 'block' : 'none';
+}
+function toggleWalletModal(abrir){
+  const modal = document.getElementById('modalCarteira');
+  if(abrir===undefined) abrir = !modal.classList.contains('aberto');
+  modal.classList.toggle('aberto', abrir);
 }
 
 function atualizarIndicadorConexao(){
@@ -566,8 +1043,16 @@ async function fetchFromSheet(){
   const url = await getScriptUrl();
   if(!url) return null;
   try{
-    const res = await fetch(url + '?action=list&_=' + Date.now(), {cache:'no-store'});
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({action:'list', token: sessaoToken})
+    });
     const json = await res.json();
+    if(json && json.sessaoInvalida){
+      await sessaoExpirada();
+      return null;
+    }
     if(!json.ok) throw new Error(json.error || 'erro ao ler o banco de dados');
     return json.data;
   }catch(e){
@@ -597,7 +1082,7 @@ async function postToSheet(payload){
   try{
     const res = await fetch(url, {
       method: 'POST',
-      headers: {'Content-Type':'text/plain;charset=utf-8'},
+      headers: {'Content-Type':'application/json'},
       body: JSON.stringify({...payload, token: sessaoToken})
     });
     const json = await res.json();
@@ -624,6 +1109,7 @@ function iniciarAtualizacaoAutomatica(){
       render();
       if(abaAtual==='relatorio') await renderizarRelatorio();
     }
+    await carregarCarteira();
   }, INTERVALO_ATUALIZACAO_MS);
 }
 
@@ -651,8 +1137,12 @@ async function atualizarApenasPedidos(){
   const dados = await fetchFromSheet();
   if(dados){
     pedidos = dados.map(normalizeServerPedido);
+    pedidos.forEach(p => {
+      if(p._server && p._server.loja_id) p.loja = lojasPorId[p._server.loja_id] || p._server.loja_id;
+    });
   }
   render();
+  await carregarCarteira();
 }
 
 async function load(){
@@ -679,16 +1169,6 @@ async function load(){
     pedidos = val ? JSON.parse(val) : [];
   }catch(e){ pedidos = []; }
 
-  const seeded = lsGet(SEED_FLAG_KEY);
-  if(!seeded){
-    const existentes = new Set(pedidos.map(p=>p.idPedido));
-    const novos = SEED_PEDIDOS.filter(p=>!existentes.has(p.idPedido)).map(p=>({...p, id: Date.now().toString()+Math.random().toString(36).slice(2)}));
-    if(novos.length){
-      pedidos = [...novos, ...pedidos];
-      await save();
-    }
-    lsSet(SEED_FLAG_KEY, '1');
-  }
   render();
 }
 async function save(){
@@ -699,44 +1179,90 @@ async function addPedido(btn){
   const idPedido = document.getElementById('f_id').value.trim();
   const dataPedido = document.getElementById('f_data_pedido').value;
   const loja = document.getElementById('f_loja').value.trim();
-  const valor = parseBRL(document.getElementById('f_valor').value);
   const dataEntrega = document.getElementById('f_data_entrega').value;
+  const { valorProduto, valorFrete, requerInstalacao, valorInstalacao, ajusteValor, total } = calcularValorTotalPedido();
 
-  if(!idPedido || !dataPedido || !loja || !valor || !dataEntrega){
-    alert('Preencha nº do pedido, data do pedido, loja, valor do pedido e o prazo estimado de entrega antes de adicionar.');
+  if(!idPedido || !dataPedido || !loja || !dataEntrega){
+    alert('Preencha nº do pedido, data do pedido, loja e o prazo estimado de entrega antes de adicionar.');
     return;
   }
+  if(itensNovoPedido.length===0){
+    alert('Adicione pelo menos um item ao pedido antes de continuar.');
+    return;
+  }
+  if(document.getElementById('f_requer_instalacao').value === ''){
+    alert('Selecione se o pedido requer instalação (Sim ou Não) antes de continuar.');
+    return;
+  }
+
+  const localFrete = document.getElementById('f_local_frete').value.trim();
 
   const dados = {
     idPedido: idPedido,
     dataPedido: dataPedido,
     loja: loja,
-    valor: valor,
+    valorProduto: valorProduto,
+    valorFrete: valorFrete,
+    localFrete: localFrete || null,
+    requerInstalacao: requerInstalacao,
+    valorInstalacao: valorInstalacao,
+    ajusteValor: ajusteValor,
+    valor: total,
     dataEntrega: dataEntrega,
     nota: document.getElementById('f_nota').value || null,
     emissao: document.getElementById('f_emissao').value || null,
     nfLancada: document.getElementById('f_nf_lancada').value || '',
-    observacoes: document.getElementById('f_obs').value || ''
+    observacoes: document.getElementById('f_obs').value || '',
+    itens: itensNovoPedido.map(it => ({
+      produtoId: it.produtoId || null,
+      descricao: it.descricao || null,
+      quantidade: it.quantidade,
+      valorUnitario: it.valorUnitario,
+      valorTotal: it.valorTotal,
+      alturaCm: it.alturaCm || null,
+      larguraCm: it.larguraCm || null
+    }))
   };
 
   setBotaoCarregando(btn, 'Adicionando...');
+  let sucesso = false;
   try{
     if(usingServer){
       const resp = await postToSheet({action:'create', data: dados, perfil: perfilAtual});
       if(!resp || !resp.ok){ alert('Não consegui gravar no banco de dados: ' + (resp&&resp.error||'erro desconhecido')); return; }
+      itensNovoPedido = [];
+      renderizarItensPedido();
       await atualizarApenasPedidos();
+      sucesso = true;
     } else {
       const p = {...dados, id: Date.now().toString(), obs: dados.observacoes, dataPgtoLoja: null, dataRepasseInvestidor: null};
       pedidos.unshift(p);
+      itensNovoPedido = [];
+      renderizarItensPedido();
       save();
       render();
+      sucesso = true;
     }
   } finally {
     restaurarBotao(btn);
   }
-  ['f_id','f_data_pedido','f_loja','f_valor','f_data_entrega','f_nota','f_emissao','f_obs'].forEach(id=>document.getElementById(id).value='');
+  if(sucesso) limparFormularioNovoPedido();
+}
+
+function limparFormularioNovoPedido(){
+  ['f_id','f_data_pedido','f_loja','f_local_frete','f_valor_frete','f_valor_instalacao','f_ajuste_valor','f_data_entrega','f_nota','f_emissao','f_obs','f_item_produto','f_item_produto_busca','f_item_descricao','f_item_valor_unitario','f_item_altura','f_item_largura','f_item_quantidade'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
   document.getElementById('f_nf_lancada').value='';
-  updatePreview();
+  document.getElementById('f_ajuste_tipo').value='';
+  document.getElementById('f_item_tipo').value='existente';
+  alternarTipoItemPedido();
+  document.getElementById('itemPedidoAviso').innerHTML='';
+  document.getElementById('itemPedidoPreco').innerHTML='';
+  limparSelecaoInstalacao();
+  toggleCampoAjuste();
+  itensNovoPedido = [];
+  renderizarItensPedido();
+  atualizarTotalPedido();
+  toggleFormNovoPedido(false);
 }
 
 async function concluirHoje(id, btn){
@@ -745,7 +1271,6 @@ async function concluirHoje(id, btn){
   const hoje = hojeStr();
   const dados = {};
   if(!p.dataRepasseInvestidor) dados.dataRepasseInvestidor = hoje;
-  if(!p.dataComissaoRepasse) dados.dataComissaoRepasse = hoje;
   if(!p.dataPgtoLoja) dados.dataPgtoLoja = hoje;
   if(Object.keys(dados).length===0) return;
 
@@ -771,12 +1296,9 @@ async function setCampo(id, campo, valorEl, btn){
   const el = document.getElementById(valorEl);
   const valor = el.value || null;
 
-  // A comissão da GVH é paga junto: 5% no ato do sinal, 5% no ato do repasse —
-  // então a data dessas duas parcelas é preenchida automaticamente, sem
-  // precisar de uma ação separada.
+  // A comissão da GVH agora é 100% automática (calculada a partir de
+  // dataSinal/dataRepasseInvestidor), não precisa mais mandar uma data separada.
   const dados = {[campo]: valor};
-  if(campo === 'dataSinal') dados.dataComissaoSinal = valor;
-  if(campo === 'dataRepasseInvestidor') dados.dataComissaoRepasse = valor;
 
   setBotaoCarregando(btn, 'Salvando...');
   try{
@@ -805,6 +1327,46 @@ async function marcarNFLancada(id, valor, sel){
       await atualizarApenasPedidos();
     } else {
       p.nfLancada = valor;
+      save();
+      render();
+    }
+  } finally {
+    if(sel) sel.disabled = false;
+  }
+}
+async function salvarStatusOperacional(id, valor, sel){
+  const p = pedidos.find(x=>x.id===id);
+  if(!p) return;
+
+  if(sel) sel.disabled = true;
+  try{
+    if(usingServer){
+      const resp = await postToSheet({action:'update', idPedido: p.idPedido, data: {statusOperacional: valor}, perfil: perfilAtual});
+      if(!resp || !resp.ok){ alert('Não consegui gravar no banco de dados: ' + (resp&&resp.error||'erro desconhecido')); return; }
+      await atualizarApenasPedidos();
+      if(detalheAtualId===id) renderModalDetalhe(id, detalheCache[id] || null);
+    } else {
+      p.statusOperacional = valor;
+      save();
+      render();
+      if(detalheAtualId===id) renderModalDetalhe(id, detalheCache[id] || null);
+    }
+  } finally {
+    if(sel) sel.disabled = false;
+  }
+}
+async function salvarCaminho(id, valor, sel){
+  const p = pedidos.find(x=>x.id===id);
+  if(!p) return;
+
+  if(sel) sel.disabled = true;
+  try{
+    if(usingServer){
+      const resp = await postToSheet({action:'update', idPedido: p.idPedido, data: {caminho: valor}, perfil: perfilAtual});
+      if(!resp || !resp.ok){ alert('Não consegui gravar no banco de dados: ' + (resp&&resp.error||'erro desconhecido')); return; }
+      await atualizarApenasPedidos();
+    } else {
+      p.caminho = valor;
       save();
       render();
     }
@@ -849,9 +1411,11 @@ async function excluir(id, btn){
     if(usingServer){
       const resp = await postToSheet({action:'delete', idPedido: p.idPedido, perfil: perfilAtual});
       if(!resp || !resp.ok){ alert('Não consegui excluir no banco de dados: ' + (resp&&resp.error||'erro desconhecido')); return; }
+      if(detalheAtualId === id) fecharDetalhePedido();
       await atualizarApenasPedidos();
     } else {
       pedidos = pedidos.filter(x=>x.id!==id);
+      if(detalheAtualId === id) fecharDetalhePedido();
       save();
       render();
     }
@@ -862,9 +1426,13 @@ async function excluir(id, btn){
 
 let filtroId = '';
 let filtroStatus = '';
+let filtroStatusOp = '';
+let filtroCaminho = '';
+let filtroLoja = '';
 let filtroAtrasado = false;
 let filtroEntregaAtrasada = false;
-let filtroEntregue = false;
+let paginaOperacionalAtual = 1;
+const PEDIDOS_POR_PAGINA = 20;
 
 let DIAS_LIMITE_PRODUCAO = 4; // dias em "Em Produção" a partir dos quais vira alerta de material atrasado — sobrescrito pela aba Configurações quando conectado à planilha
 const CHAVE_CONFIG_PRODUCAO = 'Prazo limite de produção (dias)';
@@ -873,8 +1441,13 @@ async function fetchConfigFromSheet(){
   const url = await getScriptUrl();
   if(!url) return null;
   try{
-    const res = await fetch(url + '?action=config&_=' + Date.now(), {cache:'no-store'});
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({action:'config', token: sessaoToken})
+    });
     const json = await res.json();
+    if(json && json.sessaoInvalida){ await sessaoExpirada(); return null; }
     if(!json.ok) return null;
     return json.data;
   }catch(e){
@@ -884,23 +1457,26 @@ async function fetchConfigFromSheet(){
 }
 
 async function aplicarConfigDaPlanilha(){
-  const config = await fetchConfigFromSheet();
-  if(!config) return;
+  const linhas = await fetchConfigFromSheet();
+  if(!linhas) return;
+  const config = {};
+  linhas.forEach(r => { if(r && r.chave) config[r.chave] = r.valor; });
   const mapa = {
-    [CHAVE_CONFIG_PRODUCAO]: { aplicar: v => { DIAS_LIMITE_PRODUCAO = v; }, percentual: false },
-    '% Sinal pago pelo investidor': { aplicar: v => { PCT_SINAL = v; }, percentual: true },
-    '% Juros sobre o sinal': { aplicar: v => { PCT_INVESTIDOR = v; }, percentual: true },
-    '% Impostos da Nota Fiscal': { aplicar: v => { PCT_NOTA = v; }, percentual: true },
-    '% Comissão da Consultoria': { aplicar: v => { PCT_COMISSAO = v; }, percentual: true },
-    'Prazo de pagamento da loja (dias)': { aplicar: v => { PRAZO_PGTO_LOJA = v; }, percentual: false },
-    'Prazo de alerta - NF não lançada (dias)': { aplicar: v => { RISCO_DIAS = v; }, percentual: false }
+    prazo_limite_producao_dias: { aplicar: v => { DIAS_LIMITE_PRODUCAO = v; }, percentual: false },
+    pct_sinal: { aplicar: v => { PCT_SINAL = v; }, percentual: true },
+    pct_juros_sinal: { aplicar: v => { PCT_INVESTIDOR = v; }, percentual: true },
+    pct_impostos_nf: { aplicar: v => { PCT_NOTA = v; }, percentual: true },
+    pct_comissao: { aplicar: v => { PCT_COMISSAO = v; }, percentual: true },
+    prazo_pgto_loja_dias: { aplicar: v => { PRAZO_PGTO_LOJA = v; }, percentual: false },
+    prazo_alerta_nf_dias: { aplicar: v => { RISCO_DIAS = v; }, percentual: false }
   };
   Object.keys(mapa).forEach(chave=>{
     const bruto = config[chave];
     if(bruto===undefined || bruto==='') return;
     let n = parseBRL(bruto);
-    if(isNaN(n) || n<=0) return;
-    if(mapa[chave].percentual) n = normalizarPercentual(n);
+    if(isNaN(n)) return;
+    // no Supabase os percentuais ficam como fração (0.50) — o sistema usa percentual (50)
+    if(mapa[chave].percentual) n = n * 100;
     mapa[chave].aplicar(n);
   });
 }
@@ -943,7 +1519,7 @@ function diasEmProducao(p){
 }
 function isProducaoAtrasada(p){
   if(p.dataEntregaReal) return false; // já foi entregue, não é mais atraso de produção
-  if(statusKeyOf(p)!=='em_producao') return false;
+  if(calcStatusOperacional(p).key!=='producao') return false;
   const dias = diasEmProducao(p);
   return dias!==null && dias>DIAS_LIMITE_PRODUCAO;
 }
@@ -954,29 +1530,19 @@ function isMaterialAtrasado(p){
   const dias = diasDesde(p.dataEntrega);
   return dias!==null && dias>0;
 }
-function isMaterialEntregue(p){
-  return !!p.dataEntregaReal;
-}
 
 function statusKeyOf(p){
-  const label = p._server ? p._server.statusPedido : (calcStatus(p).emoji + ' ' + calcStatus(p).label);
-  if(label.indexOf('Concluído')!==-1) return 'concluido';
-  if(label.indexOf('Loja Pagou')!==-1) return 'loja_pagou';
-  if(label.indexOf('Pagamento Atrasado')!==-1) return 'atrasado';
-  if(label.indexOf('NF Lançada')!==-1) return 'nf_lancada';
-  if(label.indexOf('RISCO')!==-1) return 'risco';
-  if(label.indexOf('NF Emitida')!==-1) return 'nf_emitida';
-  if(label.indexOf('Material entregue sem NF')!==-1) return 'entregue_sem_nf';
-  if(label.indexOf('Em Produção')!==-1) return 'em_producao';
-  return 'sinal_pendente';
+  return calcStatusFinanceiro(p).key;
 }
 
 function filtroPassa(p){
-  if(filtroId && (p.idPedido||'').toString().toLowerCase().indexOf(filtroId.toLowerCase())===-1) return false;
+  if(filtroId && (p.idPedido||'').toString().trim().toLowerCase()!==filtroId.trim().toLowerCase()) return false;
   if(filtroStatus && statusKeyOf(p)!==filtroStatus) return false;
+  if(filtroStatusOp && calcStatusOperacional(p).key!==filtroStatusOp) return false;
+  if(filtroCaminho && caminhoDe(p)!==filtroCaminho) return false;
+  if(filtroLoja && p.loja!==filtroLoja) return false;
   if(filtroAtrasado && !isProducaoAtrasada(p)) return false;
   if(filtroEntregaAtrasada && !isMaterialAtrasado(p)) return false;
-  if(filtroEntregue && !isMaterialEntregue(p)) return false;
   return true;
 }
 
@@ -995,38 +1561,66 @@ function atualizarLabelCondFiltro(){
   const marcados = [];
   if(filtroAtrasado) marcados.push('Produção atrasada');
   if(filtroEntregaAtrasada) marcados.push('Material atrasado');
-  if(filtroEntregue) marcados.push('Material entregue');
   document.getElementById('condFiltroBtn').textContent = marcados.length ? marcados.join(', ') : 'Nenhuma selecionada';
 }
 
 function aplicarFiltros(){
   filtroId = document.getElementById('f_filtro_id').value.trim();
   filtroStatus = document.getElementById('f_filtro_status').value;
+  filtroCaminho = document.getElementById('f_filtro_caminho').value;
+  filtroLoja = document.getElementById('f_filtro_loja').value;
   filtroAtrasado = document.getElementById('cond_producao').checked;
   filtroEntregaAtrasada = document.getElementById('cond_material').checked;
-  filtroEntregue = document.getElementById('cond_entregue').checked;
+  paginaOperacionalAtual = 1;
   atualizarLabelCondFiltro();
   render();
 }
 function limparFiltros(){
   document.getElementById('f_filtro_id').value = '';
   document.getElementById('f_filtro_status').value = '';
+  document.getElementById('f_filtro_caminho').value = '';
+  document.getElementById('f_filtro_loja').value = '';
   document.getElementById('cond_producao').checked = false;
   document.getElementById('cond_material').checked = false;
-  document.getElementById('cond_entregue').checked = false;
   filtroId = '';
   filtroStatus = '';
+  filtroStatusOp = '';
+  filtroCaminho = '';
+  filtroLoja = '';
   filtroAtrasado = false;
   filtroEntregaAtrasada = false;
-  filtroEntregue = false;
+  paginaOperacionalAtual = 1;
   atualizarLabelCondFiltro();
   render();
 }
 
+// Clique num card de resumo (camada 1): aplica/remove o filtro de status operacional correspondente.
+function toggleFiltroStatusOp(key){
+  filtroStatusOp = (filtroStatusOp === key) ? '' : key;
+  paginaOperacionalAtual = 1;
+  render();
+}
+
+function irParaPaginaOperacional(pagina){
+  paginaOperacionalAtual = pagina;
+  render();
+}
+
+const STATUS_OPERACIONAL_ORDER = [
+  {key:'recebido', emoji:'📥', label:'Recebido'},
+  {key:'producao', emoji:'🏭', label:'Em produção'},
+  {key:'atend_humano', emoji:'🧑‍💼', label:'Em atendimento humano'},
+  {key:'pronto_envio', emoji:'📦', label:'Pronto para envio'},
+  {key:'transporte', emoji:'🚚', label:'Em transporte'},
+  {key:'instalacao', emoji:'🔧', label:'Aguardando instalação'},
+  {key:'entregue', emoji:'📬', label:'Entregue'},
+  {key:'concluido', emoji:'✅', label:'Concluído'}
+];
+
 const STATUS_ORDER = [
   {key:'sinal_pendente', emoji:'🟡', label:'Sinal Pendente'},
-  {key:'em_producao', emoji:'🔵', label:'Em Produção'},
-  {key:'entregue_sem_nf', emoji:'🔴', label:'Material entregue sem NF'},
+  {key:'sinal_pago', emoji:'🔵', label:'Sinal Pago - Aguardando NF'},
+  {key:'entregue_sem_nf', emoji:'🔴', label:'Material Entregue sem NF'},
   {key:'nf_emitida', emoji:'🟢', label:'NF Emitida - Aguardando Lançamento'},
   {key:'risco', emoji:'🔴', label:'RISCO: NF não lançada'},
   {key:'nf_lancada', emoji:'🟣', label:'NF Lançada - Aguardando Pgto Loja'},
@@ -1036,15 +1630,15 @@ const STATUS_ORDER = [
 ];
 
 function devolverInvestidorDe(p){
-  if(p._server) return parseBRL(p._server.valorDevolverInvestidor);
+  if(p._server) return parseBRL(p._server.valor_devolver_investidor);
   return calcSplit(p).devolverInvestidor;
 }
 function liquidoGraficaDe(p){
-  if(p._server) return parseBRL(p._server.valorLiquidoGrafica);
+  if(p._server) return parseBRL(p._server.valor_liquido_grafica);
   return calcSplit(p).liquidoGrafica;
 }
 function valorSinalLiquidoDe(p){
-  if(p._server && p._server.valorSinalLiquido) return parseBRL(p._server.valorSinalLiquido);
+  if(p._server && p._server.valor_sinal_liquido) return parseBRL(p._server.valor_sinal_liquido);
   const total = Number(p.valor)||0;
   return total*(PCT_SINAL/100) - comissaoMetade(p);
 }
@@ -1052,22 +1646,60 @@ function valorSinalLiquidoDe(p){
 let abaAtual = 'pedidos';
 
 function mostrarAba(aba){
-  if(aba==='investidor' && perfilAtual!=='diretor') aba='pedidos'; // segurança extra: só diretor acessa essa aba, mesmo se chamada por outro caminho
+  if(aba==='investidor' && perfilAtual!=='diretor') aba='inicio'; // segurança extra: só diretor acessa essa aba, mesmo se chamada por outro caminho
+  if(aba==='relatorio' && ['assistente','designer'].includes(perfilAtual)) aba='inicio'; // assistente/designer não têm financeiro
+  const podeGerenciarCadastros = ['diretor','grafica'].includes(perfilAtual);
+  if(['produtos','lojas','estoque'].includes(aba) && !podeGerenciarCadastros) aba='inicio'; // mesma segurança extra pros cadastros
   abaAtual = aba;
-  document.getElementById('painelPedidos').style.display = aba==='pedidos' ? 'block' : 'none';
-  document.getElementById('painelRelatorio').style.display = aba==='relatorio' ? 'block' : 'none';
-  document.getElementById('painelInvestidor').style.display = aba==='investidor' ? 'block' : 'none';
-  const btnPedidos = document.getElementById('tabPedidosBtn');
-  const btnRelatorio = document.getElementById('tabRelatorioBtn');
-  const btnInvestidor = document.getElementById('tabInvestidorBtn');
+
+  const paineis = {
+    inicio: 'painelInicio', relatorio: 'painelRelatorio',
+    investidor: 'painelInvestidor', produtos: 'painelProdutos', lojas: 'painelLojas', estoque: 'painelEstoque'
+  };
+  Object.keys(paineis).forEach(k=>{
+    document.getElementById(paineis[k]).style.display = (aba===k) ? 'block' : 'none';
+  });
+
+  const ABA_MODULO = { inicio:'inicio', relatorio:'financeiro', investidor:'financeiro', produtos:'produtos', estoque:'produtos', lojas:'lojas' };
+  const modulo = ABA_MODULO[aba] || 'inicio';
   const ativo = 'background:var(--laranja);color:#fff;border-color:var(--laranja);font-weight:600;';
-  const inativo = '';
-  btnPedidos.style.cssText = aba==='pedidos' ? ativo : inativo;
-  btnRelatorio.style.cssText = aba==='relatorio' ? ativo : inativo;
-  btnInvestidor.style.cssText = aba==='investidor' ? ativo : inativo;
-  if(perfilAtual!=='diretor') btnInvestidor.style.display = 'none'; // reforça: cssText acima não pode reexibir o botão
+
+  const btnsTopo = {
+    inicio: document.getElementById('tabInicioBtn'),
+    financeiro: document.getElementById('tabFinanceiroBtn'),
+    produtos: document.getElementById('tabProdutosModBtn'),
+    lojas: document.getElementById('tabLojasModBtn')
+  };
+  Object.keys(btnsTopo).forEach(k=>{ btnsTopo[k].style.cssText = (modulo===k) ? ativo : ''; });
+
+  document.getElementById('navsubFinanceiro').style.display = (modulo==='financeiro') ? 'flex' : 'none';
+  document.getElementById('navsubProdutos').style.display = (modulo==='produtos') ? 'flex' : 'none';
+
+  const btnsSub = {
+    relatorio: document.getElementById('tabRelatorioBtn'),
+    investidor: document.getElementById('tabInvestidorBtn'),
+    produtos: document.getElementById('tabProdutosBtn'),
+    estoque: document.getElementById('tabEstoqueBtn')
+  };
+  Object.keys(btnsSub).forEach(k=>{ btnsSub[k].style.cssText = (aba===k) ? ativo : ''; });
+  if(perfilAtual!=='diretor') btnsSub.investidor.style.display = 'none'; // reforça: cssText acima não pode reexibir o botão
+  if(['assistente','designer'].includes(perfilAtual)){ btnsTopo.financeiro.style.display='none'; btnsSub.relatorio.style.display='none'; }
+  if(!podeGerenciarCadastros){ btnsTopo.produtos.style.display='none'; btnsTopo.lojas.style.display='none'; }
+
   if(aba==='relatorio') renderizarRelatorio();
   if(aba==='investidor') renderizarPainelInvestidor();
+  if(aba==='produtos' && !produtosCarregados) carregarProdutos();
+  if(aba==='lojas' && !lojasAbaCarregada) carregarLojasAba();
+  if(aba==='estoque' && !estoqueCarregado) carregarEstoque();
+}
+
+// Clique nos botões de topo (módulos): leva pro primeiro/único sub-item daquele módulo.
+function mostrarModulo(modulo){
+  const podeGerenciarCadastros = ['diretor','grafica'].includes(perfilAtual);
+  if(modulo==='inicio') return mostrarAba('inicio');
+  if(modulo==='financeiro') return mostrarAba(perfilAtual==='assistente' ? 'inicio' : 'relatorio');
+  if(modulo==='produtos') return mostrarAba(podeGerenciarCadastros ? 'produtos' : 'inicio');
+  if(modulo==='lojas') return mostrarAba(podeGerenciarCadastros ? 'lojas' : 'inicio');
 }
 
 // Agrupa os pedidos com sinal pago e ainda sem repasse por quantos dias já
@@ -1152,35 +1784,12 @@ function gerarNarrativaInvestidor(aging, ciclo, equilibrio){
   return partes.join(' ');
 }
 
-function calcularProducaoEEntregas(){
-  // "em produção": sinal já coberto pela carteira, mas ainda não entregue
-  const emProducao = pedidos.filter(p=>statusSinalDe(p)==='Pago' && !p.dataEntregaReal);
-  const valorEmProducao = emProducao.reduce((s,p)=>s+Number(p.valor||0),0);
-
-  // "entregues": todo pedido com data de entrega real preenchida, não importa
-  // NF, repasse ou qualquer outro status — só entregue ou não
-  const entregues = pedidos.filter(p=>!!p.dataEntregaReal);
-  const valorEntregues = entregues.reduce((s,p)=>s+Number(p.valor||0),0);
-
-  return {
-    qtdEmProducao: emProducao.length, valorEmProducao,
-    qtdEntregues: entregues.length, valorEntregues
-  };
-}
-
 async function renderizarPainelInvestidor(){
   const aging = calcularAging();
   const ciclo = calcularCicloMedio();
   const equilibrio = await calcularPontoEquilibrio();
-  const producao = calcularProducaoEEntregas();
 
   document.getElementById('investidorTexto').textContent = gerarNarrativaInvestidor(aging, ciclo, equilibrio);
-
-  document.getElementById('investidorResumoRapido').innerHTML = `
-    <div class="metric"><div class="label">Valor Investido</div><div class="value">${fmt(equilibrio.totalAportado)}</div></div>
-    <div class="metric"><div class="label">Em Produção</div><div class="value">${fmt(producao.valorEmProducao)}</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">${producao.qtdEmProducao} pedido${producao.qtdEmProducao===1?'':'s'}</div></div>
-    <div class="metric"><div class="label">Entregues</div><div class="value">${fmt(producao.valorEntregues)}</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">${producao.qtdEntregues} pedido${producao.qtdEntregues===1?'':'s'}</div></div>
-  `;
 
   document.getElementById('investidorCards').innerHTML = `
     <div class="metric"><div class="label">Pedidos em aberto</div><div class="value">${aging.totalAbertos}</div></div>
@@ -1349,9 +1958,259 @@ function compararNovoParaAntigo(a, b){
   return lb - la;
 }
 
+function tempoNoSistema(p){
+  const dias = diffDays(p.dataPedido);
+  if(dias===null) return '-';
+  if(dias===0) return 'hoje';
+  if(dias===1) return '1 dia';
+  return dias + ' dias';
+}
+
+function construirTimelineSteps(p, statusOp){
+  const steps = [
+    {key:'recebido', label:'Recebido'},
+    ...sequenciaOperacional(p).map(s=>({key:s.key, label:s.label})),
+    {key:'entregue', label:'Entregue'}
+  ];
+  const idxAtual = steps.findIndex(s=>s.key===statusOp.key);
+  return steps.map((s,i)=>{
+    let estado = '';
+    if(idxAtual===-1) estado = 'feito'; // concluído: fora dessa linha simplificada, considera tudo percorrido
+    else if(i<idxAtual) estado = 'feito';
+    else if(i===idxAtual) estado = 'atual';
+    return {...s, estado};
+  });
+}
+
+function iniciaisDe(nome){
+  if(!nome) return '??';
+  const partes = nome.trim().split(/\s+/);
+  return (partes[0][0] + (partes[1]?partes[1][0]:'')).toUpperCase();
+}
+
+let detalheAtualId = null;
+let detalheCache = {};
+
+function abrirDetalhePedido(id){
+  detalheAtualId = id;
+  document.getElementById('modalDetalhe').classList.add('aberto');
+  renderModalDetalhe(id, detalheCache[id] || null);
+  if(usingServer) carregarDetalhePedido(id);
+}
+function fecharDetalhePedido(){
+  document.getElementById('modalDetalhe').classList.remove('aberto');
+  detalheAtualId = null;
+}
+async function carregarDetalhePedido(id){
+  const p = pedidos.find(x=>x.id===id);
+  if(!p || !p._server) return;
+  const resp = await postToSheet({action:'pedido_detalhe', data:{pedidoId: p._server.id}});
+  if(resp && resp.ok){
+    detalheCache[id] = resp.data;
+    if(detalheAtualId===id) renderModalDetalhe(id, resp.data);
+  }
+}
+async function enviarObservacao(id, btn){
+  const input = document.getElementById('obsNovaTexto');
+  const texto = input ? input.value.trim() : '';
+  if(!texto) return;
+  const p = pedidos.find(x=>x.id===id);
+  if(!p || !p._server) return;
+  btn.disabled = true;
+  try{
+    const resp = await postToSheet({action:'pedido_observacao_add', data:{pedidoId: p._server.id, texto, autor: usuarioAtual}});
+    if(!resp || !resp.ok){ alert('Não consegui salvar a observação: ' + (resp&&resp.error||'erro desconhecido')); return; }
+    await carregarDetalhePedido(id);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function renderArteItem(pedidoId, it, podeEditarArte){
+  if(it.personalizado){
+    const linkAtual = it.arte_personalizada_url
+      ? `<a href="${escapeAttr(it.arte_personalizada_url)}" target="_blank" rel="noopener" style="display:block;font-size:11.5px;margin-bottom:4px;">Ver arte 🔗</a>`
+      : `<div style="font-size:11.5px;color:var(--danger, #c0392b);margin-bottom:4px;">⚠️ Falta a arte</div>`;
+    if(!podeEditarArte) return linkAtual;
+    const inputId = `arteItem_${it.id}`;
+    return `${linkAtual}<div style="display:flex;gap:6px;">
+      <input id="${inputId}" placeholder="Link da pasta (Drive)" value="${escapeAttr(it.arte_personalizada_url||'')}" style="flex:1;font-size:12px;">
+      <button onclick="salvarArteItem('${pedidoId}','${it.id}','${inputId}',this)">Salvar</button>
+    </div>`;
+  }
+  return it.arte_drive_url
+    ? `<a href="${escapeAttr(it.arte_drive_url)}" target="_blank" rel="noopener" style="font-size:11.5px;">Ver arte 🔗</a>`
+    : '<span style="font-size:11.5px;color:var(--muted);">-</span>';
+}
+
+async function salvarArteItem(pedidoId, itemId, inputId, btn){
+  const input = document.getElementById(inputId);
+  const arteUrl = input ? input.value.trim() : '';
+  if(!arteUrl){ alert('Cole o link da pasta antes de salvar.'); return; }
+  btn.disabled = true;
+  try{
+    const resp = await postToSheet({action:'pedido_item_arte_add', data:{itemId, arteUrl}, perfil: perfilAtual});
+    if(!resp || !resp.ok){ alert('Não consegui salvar a arte: ' + (resp&&resp.error||'erro desconhecido')); return; }
+    await carregarDetalhePedido(pedidoId);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function renderModalDetalhe(id, detalhe){
+  const el = document.getElementById('modalDetalheConteudo');
+  const p = pedidos.find(x=>x.id===id);
+  if(!p){ el.innerHTML = ''; return; }
+  const ehDesigner = perfilAtual === 'designer';
+  const modoRestrito = ['assistente','designer'].includes(perfilAtual);
+  const statusFin = calcStatusFinanceiro(p);
+  const statusOp = calcStatusOperacional(p);
+  const caminhoInfo = p.caminho ? CAMINHO_INFO[p.caminho] : null;
+  const podeEditarOperacional = ehDesigner
+    ? (statusOp.key === 'atend_humano')
+    : (['diretor','grafica','assistente'].includes(perfilAtual) && p.dataSinal && !p.dataEntregaReal);
+  const podeCorrigirOperacional = perfilAtual==='diretor' && podeEditarOperacional;
+  const proximoEstagioModal = podeEditarOperacional ? proximoEstagio(p) : null;
+  const podeEditarArte = ['diretor','grafica','designer'].includes(perfilAtual);
+  const timelineSteps = construirTimelineSteps(p, statusOp);
+  const observacoes = detalhe ? detalhe.observacoes : null;
+  const itensDetalhe = detalhe ? (detalhe.itens || []).slice().sort((a,b)=> new Date(a.created_at) - new Date(b.created_at)) : null;
+  const limite = addDays(p.emissao, PRAZO_PGTO_LOJA);
+  const limiteStr = limite ? limite.toLocaleDateString('pt-BR') : '-';
+
+  el.innerHTML = `
+    <span class="modal-close" onclick="fecharDetalhePedido()">✕</span>
+    <div class="pedido-title" style="font-size:17px;padding-right:30px;">Pedido ${p.idPedido} — ${p.loja}</div>
+    <div style="margin-top:10px;">
+      <div class="status-linha"><span class="status-tag-label">Operacional</span><span class="badge ${statusOp.cls}">${statusOp.emoji} ${statusOp.label}</span></div>
+      ${modoRestrito ? '' : `<div class="status-linha"><span class="status-tag-label">Financeiro</span><span class="badge ${statusFin.cls}">${statusFin.emoji} ${statusFin.label}</span></div>`}
+      ${caminhoInfo ? `<div class="status-linha"><span class="status-tag-label">Caminho</span><span class="caminho-badge caminho-${p.caminho}">${caminhoInfo.label}</span></div>` : ''}
+      ${(isProducaoAtrasada(p)||isMaterialAtrasado(p)) ? `<div class="status-linha"><span class="status-tag-label">Tags</span><span class="badge risk">⚠️ Atrasado</span></div>` : ''}
+    </div>
+
+    <div class="modal-grid">
+      <div><div class="k">Valor do pedido</div><div class="v">${fmt(p.valor)}</div></div>
+      <div><div class="k">Data do pedido</div><div class="v">${fmtAny(p.dataPedido)}</div></div>
+      <div><div class="k">Prazo estimado de entrega</div><div class="v">${fmtAny(p.dataEntrega)}</div></div>
+      <div><div class="k">Entregue em</div><div class="v">${fmtAny(p.dataEntregaReal)}</div></div>
+      <div><div class="k">Nota fiscal</div><div class="v">${p.nota || '-'}</div></div>
+      <div><div class="k">Status da NF</div><div class="v">${p.emissao ? 'Emitida em '+fmtAny(p.emissao) : 'Pendente'}</div></div>
+      ${modoRestrito ? '' : `<div><div class="k">Data limite pgto loja</div><div class="v">${limiteStr}</div></div>`}
+      <div><div class="k">Criado por</div><div class="v">${p.criadoPor || '— (não informado)'}</div></div>
+    </div>
+
+    <div class="panel" style="margin:14px 0 0;padding:14px 16px;">
+      <h2 style="font-size:13px;">Produtos do pedido</h2>
+      ${!usingServer ? '<div class="hint">Disponível quando conectado ao banco de dados.</div>' : (
+        itensDetalhe===null ? '<div class="hint">Carregando...</div>' :
+        (itensDetalhe.length===0 ? '<div class="hint">Nenhum item cadastrado para este pedido.</div>' :
+          `<table class="tabela-itens-pedido" style="width:100%;font-size:13px;">
+            <thead><tr>
+              <th style="text-align:left;">Produto</th>
+              <th style="text-align:right;">Qtd.</th>
+              ${ehDesigner ? '' : '<th style="text-align:right;">Valor unit.</th><th style="text-align:right;">Total</th>'}
+              <th style="text-align:left;">Arte</th>
+            </tr></thead>
+            <tbody>
+              ${itensDetalhe.map(it=>`
+                <tr>
+                  <td>${escapeAttr(it.nome||it.descricao_item||'-')}${(it.altura_cm && it.largura_cm) ? `<div style="font-size:11.5px;color:var(--muted);">${it.altura_cm}cm x ${it.largura_cm}cm</div>` : ''}</td>
+                  <td style="text-align:right;">${it.quantidade}</td>
+                  ${ehDesigner ? '' : `<td style="text-align:right;">${fmt(it.preco_unitario)}</td><td style="text-align:right;">${fmt(it.valor_total)}</td>`}
+                  <td>${renderArteItem(p.id, it, podeEditarArte)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>`
+        )
+      )}
+    </div>
+
+    <div class="timeline-op">
+      ${timelineSteps.map(s=>`<div class="tl-step ${s.estado}"><div class="tl-dot"></div><div class="tl-label">${s.label}</div></div>`).join('')}
+    </div>
+
+    ${podeEditarOperacional ? `
+    <div style="margin:14px 0;display:flex;flex-direction:column;gap:8px;">
+      ${proximoEstagioModal
+        ? `<button class="primary" onclick="salvarStatusOperacional('${p.id}', '${proximoEstagioModal.key}', this)">Avançar para: ${proximoEstagioModal.emoji} ${proximoEstagioModal.label}</button>`
+        : (estagioForaDaSequencia(p)
+            ? `<div class="hint">⚠️ Estágio atual ("${p.statusOperacional}") fora da sequência esperada do caminho ${(p.caminho||'-').toUpperCase()} — não há próximo estágio automático. Use "Corrigir estágio manualmente" abaixo.</div>`
+            : `<div class="hint">Aguardando entrega para concluir automaticamente.</div>`
+          )
+      }
+      ${podeCorrigirOperacional ? `
+      <details>
+        <summary style="cursor:pointer;font-size:12px;color:var(--muted);">Corrigir estágio manualmente</summary>
+        <div class="field" style="margin-top:8px;">
+          <select onchange="if(this.value){ if(confirm('Corrigir o estágio manualmente para \\''+this.options[this.selectedIndex].text+'\\'? Isso ignora a sequência normal do pedido.')){ salvarStatusOperacional('${p.id}', this.value, this); } else { this.value=''; } }">
+            <option value="">Selecione...</option>
+            ${ESTAGIOS_OPERACIONAIS_MANUAIS.map(e=>`<option value="${e.key}" ${statusOp.key===e.key?'selected':''}>${e.emoji} ${e.label}</option>`).join('')}
+          </select>
+        </div>
+      </details>` : ''}
+    </div>` : ''}
+
+    <div class="panel" style="margin:16px 0 0;padding:14px 16px;">
+      <h2 style="font-size:13px;">Observações</h2>
+      ${!usingServer ? '<div class="hint">Disponível quando conectado ao banco de dados.</div>' : (
+        observacoes===null ? '<div class="hint">Carregando...</div>' :
+        (observacoes.length===0 ? '<div class="hint">Nenhuma observação ainda.</div>' :
+          observacoes.map(o=>`
+            <div class="mural-item">
+              <div class="mural-avatar ${o.origem==='iara'?'iara':''}">${o.origem==='iara'?'IA':iniciaisDe(o.autor)}</div>
+              <div>
+                <div class="mural-texto">${(o.texto||'').replace(/</g,'&lt;')}</div>
+                <div class="mural-meta">${o.origem==='iara'?'Iara':(o.autor||'—')} · ${fmtDataHora(o.data)}</div>
+              </div>
+            </div>
+          `).join('')
+        )
+      )}
+      ${usingServer ? `
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <input id="obsNovaTexto" placeholder="Escreva uma observação..." style="flex:1;">
+        <button class="primary" onclick="enviarObservacao('${p.id}', this)">Adicionar</button>
+      </div>` : ''}
+    </div>
+
+    ${ehDesigner ? '' : `
+    <div class="pedido-actions" style="margin-top:16px;">
+      ${(!p.nota || p.nota==='-') ? `
+      <span class="mini">Nota fiscal:
+        <input type="text" id="mnumnf_${p.id}" placeholder="Nº NF" style="width:90px;">
+        <input type="date" id="mdatanf_${p.id}">
+        <button onclick="adicionarNotaFiscal('${p.id}','mnumnf_${p.id}','mdatanf_${p.id}',this)">Salvar</button>
+      </span>` : ''}
+      <span class="mini">NF Lançada no sistema Atacadão?
+        <select onchange="marcarNFLancada('${p.id}', this.value, this)">
+          <option value="" ${p.nfLancada?'':'selected'}>-</option>
+          <option value="sim" ${p.nfLancada==='sim'?'selected':''}>Sim</option>
+          <option value="nao" ${p.nfLancada==='nao'?'selected':''}>Não</option>
+        </select>
+      </span>
+      <span class="mini">Loja pagou em
+        <input type="date" id="mpag_${p.id}" value="${toISO(p.dataPgtoLoja)}">
+        <button onclick="setCampo('${p.id}','dataPgtoLoja','mpag_${p.id}',this)">Salvar</button>
+      </span>
+      ${(!p.dataEntregaReal) ? `
+      <span class="mini">Material entregue em
+        <input type="date" id="mentregareal_${p.id}">
+        <button onclick="setCampo('${p.id}','dataEntregaReal','mentregareal_${p.id}',this)">Salvar</button>
+      </span>` : ''}
+      ${(!p.dataRepasseInvestidor) ? `
+      <button class="secondary" data-role="diretor" onclick="concluirHoje('${p.id}',this)">Concluir na data de hoje</button>
+      ` : ''}
+      <button class="danger" data-role="diretor" onclick="excluir('${p.id}',this)">Excluir</button>
+    </div>
+    `}
+  `;
+  aplicarPermissoesUI();
+}
+
 function render(){
   pedidos.sort(compararNovoParaAntigo);
-  const modoRestrito = perfilAtual === 'assistente';
+  const modoRestrito = ['assistente','designer'].includes(perfilAtual);
 
   const selStatus = document.getElementById('f_filtro_status');
   if(selStatus.options.length===1){
@@ -1364,116 +2223,74 @@ function render(){
     selStatus.value = filtroStatus;
   }
 
-  const visiveis = pedidos.filter(filtroPassa);
-  const resumo = document.getElementById('filtroResumo');
-  resumo.textContent = (filtroId || filtroStatus)
-    ? `Mostrando ${visiveis.length} de ${pedidos.length} pedidos.`
-    : 'Status calculado automaticamente a partir das datas — não depende de nenhum sistema externo.';
-
-  const lista = document.getElementById('lista');
-  if(visiveis.length===0){
-    lista.innerHTML = `<div class="empty">${pedidos.length===0 ? 'Nenhum pedido cadastrado ainda.' : 'Nenhum pedido encontrado com esse filtro.'}</div>`;
-    return;
-  }
-  lista.innerHTML = visiveis.map(p=>{
-    const srv = p._server;
-    let statusLabel, statusCls, sinalTxt, devolverTxt, comissaoTxt, impostosTxt, liquidoTxt, limiteStr, statusSinal, statusPgtoLoja, statusRepasse;
-
-    if(srv){
-      statusLabel = srv.statusPedido;
-      statusCls = classifyServerStatus(srv.statusPedido);
-      sinalTxt = srv.valorSinal;
-      devolverTxt = srv.valorDevolverInvestidor;
-      comissaoTxt = srv.valorComissao;
-      impostosTxt = srv.valorImpostos;
-      liquidoTxt = srv.valorLiquidoGrafica;
-      limiteStr = fmtAny(srv.dataLimite);
-      statusSinal = srv.statusSinal || (p.dataSinal ? 'Pago' : 'Pendente');
-      statusPgtoLoja = srv.statusPgtoLoja || (p.dataPgtoLoja ? 'Pago' : 'Pendente');
-      statusRepasse = srv.statusRepasseInvestidor || (p.dataRepasseInvestidor ? 'Concluído' : 'Pendente');
-    } else {
-      const split = calcSplit(p);
-      const status = calcStatus(p);
-      statusLabel = status.emoji + ' ' + status.label;
-      statusCls = status.cls;
-      sinalTxt = fmt(split.sinal);
-      devolverTxt = fmt(split.devolverInvestidor);
-      comissaoTxt = fmt(split.comissao);
-      impostosTxt = fmt(split.impostos);
-      liquidoTxt = fmt(split.liquidoGrafica);
-      const limite = addDays(p.emissao, PRAZO_PGTO_LOJA);
-      limiteStr = limite ? limite.toLocaleDateString('pt-BR') : '-';
-      statusSinal = p.dataSinal ? 'Pago' : 'Pendente';
-      statusPgtoLoja = p.dataPgtoLoja ? 'Pago' : 'Pendente';
-      statusRepasse = p.dataRepasseInvestidor ? 'Concluído' : 'Pendente';
-    }
-
+  // Camada 1 — resumo por status operacional (sempre sobre o total, não sobre o filtro atual)
+  const porStatus = {};
+  STATUS_OPERACIONAL_ORDER.forEach(s=>{ porStatus[s.key] = {count:0, soma:0}; });
+  pedidos.forEach(p=>{
+    const k = calcStatusOperacional(p).key;
+    if(!porStatus[k]) porStatus[k] = {count:0, soma:0};
+    porStatus[k].count++;
+    porStatus[k].soma += Number(p.valor)||0;
+  });
+  const resumoRow = document.getElementById('resumoStatusRow');
+  resumoRow.innerHTML = STATUS_OPERACIONAL_ORDER.map(s=>{
+    const dados = porStatus[s.key] || {count:0, soma:0};
     return `
-    <div class="pedido">
-      <div class="pedido-top">
-        <div>
-          <div class="pedido-title">Pedido ${p.idPedido} — ${p.loja} — ${srv?srv.valor:fmt(p.valor)}</div>
-          <div class="pedido-sub">Data do pedido ${fmtAny(p.dataPedido)}${modoRestrito?'':` · Sinal: ${statusSinal}`} · Entrega estimada: ${fmtAny(p.dataEntrega)} · Entregue em: ${fmtAny(p.dataEntregaReal)}</div>
-          <div class="pedido-sub">Nota ${p.nota || '-'} — emitida ${fmtAny(p.emissao)}${modoRestrito?'':` · Data limite pgto loja: ${limiteStr}`}</div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
-          <span class="badge ${statusCls}">${statusLabel}</span>
-          ${isMaterialEntregue(p) ? `<span class="badge ok">📦 Material Entregue (${fmtAny(p.dataEntregaReal)})</span>` : ''}
-          ${isProducaoAtrasada(p) ? `<span class="badge risk">⚠️ Produção atrasada (${diasEmProducao(p)}d em produção)</span>` : ''}
-          ${isMaterialAtrasado(p) ? `<span class="badge risk">🔴 Material atrasado (entrega prevista ${fmtAny(p.dataEntrega)})</span>` : ''}
-        </div>
+      <div class="resumo-card ${filtroStatusOp===s.key?'ativo':''}" onclick="toggleFiltroStatusOp('${s.key}')">
+        <div class="rc-label">${s.emoji} ${s.label}</div>
+        <div class="rc-count">${dados.count}</div>
+        ${modoRestrito ? '' : `<div class="rc-soma">${fmt(dados.soma)}</div>`}
       </div>
-
-      ${modoRestrito ? `
-      <div class="split">
-        <div><div class="k">Valor do pedido</div><div class="v">${srv?srv.valor:fmt(p.valor)}</div></div>
-      </div>
-      ` : `
-      <div class="split">
-        <div><div class="k">Sinal (${PCT_SINAL}%)</div><div class="v">${sinalTxt}</div></div>
-        <div><div class="k">Devolver investidor (sinal+${PCT_INVESTIDOR}%)</div><div class="v">${devolverTxt}</div></div>
-        <div><div class="k">Comissão GVH</div><div class="v">${fmt(comissaoPagaGVH(p))} pago · ${fmt(comissaoFaltaGVH(p))} falta</div></div>
-        <div><div class="k">Impostos NF (${PCT_NOTA}%)</div><div class="v">${impostosTxt}</div></div>
-        <div><div class="k">Líquido p/ Gráfica</div><div class="v">${liquidoTxt}</div></div>
-      </div>
-      `}
-
-      <div class="stepline">NF lançada no Atacadão: ${p.nfLancada==='sim'?'Sim':(p.nfLancada==='nao'?'Não':'-')} · Status pagamento loja: ${statusPgtoLoja} (${fmtAny(p.dataPgtoLoja)})</div>
-      ${modoRestrito ? '' : `
-      <div class="stepline">Status repasse investidor: ${statusRepasse} (${fmtAny(p.dataRepasseInvestidor)})</div>
-      <div class="stepline">Comissão GVH — 5% no sinal: ${statusSinalDe(p)==='Pago'?'Pago':'Pendente'} (${fmt(comissaoMetade(p))}) · 5% no repasse: ${p.dataComissaoRepasse?'Pago em '+fmtAny(p.dataComissaoRepasse):'Pendente'} (${fmt(comissaoMetade(p))})</div>
-      `}
-
-      <div class="pedido-actions">
-        ${(!p.nota || p.nota==='-') ? `
-        <span class="mini">Nota fiscal:
-          <input type="text" id="numnf_${p.id}" placeholder="Nº NF" style="width:90px;">
-          <input type="date" id="datanf_${p.id}">
-          <button onclick="adicionarNotaFiscal('${p.id}','numnf_${p.id}','datanf_${p.id}',this)">Salvar</button>
-        </span>` : ''}
-        <span class="mini">NF Lançada no sistema Atacadão?
-          <select onchange="marcarNFLancada('${p.id}', this.value, this)">
-            <option value="" ${p.nfLancada?'':'selected'}>-</option>
-            <option value="sim" ${p.nfLancada==='sim'?'selected':''}>Sim</option>
-            <option value="nao" ${p.nfLancada==='nao'?'selected':''}>Não</option>
-          </select>
-        </span>
-        <span class="mini">Loja pagou em
-          <input type="date" id="pag_${p.id}" value="${toISO(p.dataPgtoLoja)}">
-          <button onclick="setCampo('${p.id}','dataPgtoLoja','pag_${p.id}',this)">Salvar</button>
-        </span>
-        ${(!p.dataEntregaReal) ? `
-        <span class="mini">Material entregue em
-          <input type="date" id="entregareal_${p.id}">
-          <button onclick="setCampo('${p.id}','dataEntregaReal','entregareal_${p.id}',this)">Salvar</button>
-        </span>` : ''}
-        ${(!p.dataRepasseInvestidor) ? `
-        <button class="secondary" data-role="diretor" onclick="concluirHoje('${p.id}',this)">Concluir na data de hoje</button>
-        ` : ''}
-        <button class="danger" data-role="diretor" onclick="excluir('${p.id}',this)">Excluir</button>
-      </div>
-    </div>`;
+    `;
   }).join('');
+
+  const visiveis = pedidos.filter(filtroPassa);
+  const resumoTxt = document.getElementById('filtroResumo');
+  resumoTxt.textContent = `Mostrando ${visiveis.length} de ${pedidos.length} pedidos.`;
+
+  const totalPaginas = Math.max(1, Math.ceil(visiveis.length / PEDIDOS_POR_PAGINA));
+  if(paginaOperacionalAtual > totalPaginas) paginaOperacionalAtual = totalPaginas;
+  if(paginaOperacionalAtual < 1) paginaOperacionalAtual = 1;
+  const inicioPagina = (paginaOperacionalAtual - 1) * PEDIDOS_POR_PAGINA;
+  const paginaVisivel = visiveis.slice(inicioPagina, inicioPagina + PEDIDOS_POR_PAGINA);
+
+  const tbody = document.getElementById('listaOperacional');
+  if(paginaVisivel.length===0){
+    tbody.innerHTML = `<tr><td colspan="7" class="empty">${pedidos.length===0 ? 'Nenhum pedido cadastrado ainda.' : 'Nenhum pedido encontrado com esse filtro.'}</td></tr>`;
+  } else {
+    tbody.innerHTML = paginaVisivel.map(p=>{
+      const statusOp = calcStatusOperacional(p);
+      const statusFin = calcStatusFinanceiro(p);
+      return `
+        <tr>
+          <td><strong>${p.idPedido}</strong></td>
+          <td>${p.loja||'-'}</td>
+          <td>${p.caminho && CAMINHO_INFO[p.caminho] ? `<span class="caminho-badge caminho-${p.caminho}">${CAMINHO_INFO[p.caminho].label}</span>` : `<span class="caminho-badge caminho-indef">-</span>`}</td>
+          <td>
+            <div class="status-linha"><span class="status-tag-label">Operacional</span><span class="badge ${statusOp.cls}">${statusOp.emoji} ${statusOp.label}</span></div>
+            ${modoRestrito ? '' : `<div class="status-linha"><span class="status-tag-label">Financeiro</span><span class="badge ${statusFin.cls}">${statusFin.emoji} ${statusFin.label}</span></div>`}
+            ${isProducaoAtrasada(p) || isMaterialAtrasado(p) ? `<div class="status-linha"><span class="status-tag-label">Tags</span><span class="badge risk">⚠️ Atrasado</span></div>` : ''}
+          </td>
+          <td>${tempoNoSistema(p)}</td>
+          <td>${fmt(p.valor)}</td>
+          <td><button class="btn-vermais" onclick="abrirDetalhePedido('${p.id}')">Ver mais →</button></td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  const paginacaoEl = document.getElementById('paginacaoOperacional');
+  if(totalPaginas <= 1){
+    paginacaoEl.innerHTML = '';
+  } else {
+    paginacaoEl.innerHTML = `
+      <button type="button" class="ghost" ${paginaOperacionalAtual<=1?'disabled':''} onclick="irParaPaginaOperacional(${paginaOperacionalAtual-1})">← Anterior</button>
+      <span style="font-size:13px;color:var(--muted);">Página ${paginaOperacionalAtual} de ${totalPaginas}</span>
+      <button type="button" class="ghost" ${paginaOperacionalAtual>=totalPaginas?'disabled':''} onclick="irParaPaginaOperacional(${paginaOperacionalAtual+1})">Próxima →</button>
+    `;
+  }
+
+  if(detalheAtualId) renderModalDetalhe(detalheAtualId, detalheCache[detalheAtualId] || null);
   aplicarPermissoesUI();
 }
 
@@ -1482,17 +2299,32 @@ function popularListaLojas(lista){
   dl.innerHTML = '';
   lista.forEach(l=>{
     const opt = document.createElement('option');
-    opt.value = l;
+    opt.value = l.nome;
     dl.appendChild(opt);
   });
+}
+
+function sincronizarEnderecoFreteComLoja(){
+  const nomeLoja = document.getElementById('f_loja').value.trim();
+  const loja = lojasCompletas.find(l => (l.nome||'').trim().toLowerCase() === nomeLoja.toLowerCase());
+  const campoFrete = document.getElementById('f_local_frete');
+  if(!campoFrete) return;
+  if(loja && loja.endereco){
+    campoFrete.value = loja.endereco;
+  }
 }
 
 async function fetchLojasFromSheet(){
   const url = await getScriptUrl();
   if(!url) return null;
   try{
-    const res = await fetch(url + '?action=lojas&_=' + Date.now(), {cache:'no-store'});
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({action:'lojas', token: sessaoToken})
+    });
     const json = await res.json();
+    if(json && json.sessaoInvalida){ await sessaoExpirada(); return null; }
     if(!json.ok) return null;
     return json.data;
   }catch(e){
@@ -1503,15 +2335,28 @@ async function fetchLojasFromSheet(){
 
 async function atualizarListaLojas(){
   const lojas = await fetchLojasFromSheet();
-  if(lojas && lojas.length) popularListaLojas(lojas);
+  if(lojas && lojas.length){
+    popularListaLojas(lojas);
+    lojasCompletas = lojas;
+    lojasPorId = {};
+    lojas.forEach(l => { if(l && l.id) lojasPorId[l.id] = l.nome; });
+    pedidos.forEach(p => {
+      if(p._server && p._server.loja_id) p.loja = lojasPorId[p._server.loja_id] || p._server.loja_id;
+    });
+  }
 }
 
 async function fetchCarteira(){
   const url = await getScriptUrl();
   if(!url) return null;
   try{
-    const res = await fetch(url + '?action=carteira&_=' + Date.now(), {cache:'no-store'});
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({action:'carteira', token: sessaoToken})
+    });
     const json = await res.json();
+    if(json && json.sessaoInvalida){ await sessaoExpirada(); return null; }
     if(!json.ok) return null;
     return json.data;
   }catch(e){
@@ -1525,10 +2370,11 @@ let carteiraMostrandoTodos = false;
 const CARTEIRA_LIMITE_INICIAL = 5;
 
 async function carregarCarteira(){
-  if(perfilAtual === 'assistente' || !usingServer) return;
+  if(['assistente','designer'].includes(perfilAtual) || !usingServer) return;
   const dados = await fetchCarteira();
   if(!dados) return;
   document.getElementById('carteiraSaldo').textContent = fmt(dados.saldo);
+  document.getElementById('walletSaldoMini').textContent = fmt(dados.saldo);
   carteiraTodosLancamentos = dados.lancamentos;
   carteiraMostrandoTodos = false;
   renderizarHistoricoCarteira();
@@ -1577,6 +2423,641 @@ async function lancarCarteira(btn){
   } finally {
     restaurarBotao(btn);
   }
+}
+
+// ==========================================================
+// PRODUTOS / LOJAS / ESTOQUE — Fase 11B
+// ==========================================================
+
+function escapeAttr(s){
+  return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+}
+function fmtNum(n){ return n==null ? '' : String(n).replace('.', ','); }
+
+// --- PRODUTOS ---
+let produtosLista = [];
+let produtosCarregados = false;
+let faixaContador = 0;
+
+function atualizarCamposTipoProduto(){
+  const tipo = document.getElementById('pf_tipo').value;
+  document.getElementById('pf_campo_preco_padrao').style.display = tipo==='fixo' ? '' : 'none';
+  document.getElementById('pf_campo_preco_m2').style.display = tipo==='area' ? '' : 'none';
+  document.getElementById('pf_bloco_faixas').style.display = tipo==='faixa_quantidade' ? '' : 'none';
+}
+function atualizarCamposTipoProdutoEdit(id){
+  const tipo = document.getElementById('pef_tipo_'+id).value;
+  document.getElementById('pef_campo_preco_padrao_'+id).style.display = tipo==='fixo' ? '' : 'none';
+  document.getElementById('pef_campo_preco_m2_'+id).style.display = tipo==='area' ? '' : 'none';
+  document.getElementById('pef_bloco_faixas_'+id).style.display = tipo==='faixa_quantidade' ? '' : 'none';
+}
+
+function adicionarLinhaFaixa(containerId, valores){
+  const container = document.getElementById(containerId);
+  if(!container) return;
+  const rowId = 'faixaRow_' + (faixaContador++);
+  const div = document.createElement('div');
+  div.id = rowId;
+  div.style.cssText = 'display:flex;gap:8px;align-items:flex-end;margin-bottom:8px;';
+  div.innerHTML = `
+    <div class="field" style="flex:1;"><label>Qtd. mínima</label><input type="number" class="faixa-qtd-min" value="${valores && valores.qtd_minima!=null ? valores.qtd_minima : ''}" placeholder="Ex: 1"></div>
+    <div class="field" style="flex:1;"><label>Qtd. máxima (vazio = em diante)</label><input type="number" class="faixa-qtd-max" value="${valores && valores.qtd_maxima!=null ? valores.qtd_maxima : ''}" placeholder="Ex: 9"></div>
+    <div class="field" style="flex:1;"><label>Preço unitário (R$)</label><input type="text" inputmode="numeric" class="faixa-preco" value="${valores && valores.preco_unitario!=null ? fmtNum(valores.preco_unitario) : ''}" oninput="formatarMoedaDigitado(this)" placeholder="0,00"></div>
+    <button type="button" class="ghost" onclick="this.parentElement.remove()" style="height:38px;">Remover</button>
+  `;
+  container.appendChild(div);
+}
+
+function coletarFaixas(containerId){
+  const container = document.getElementById(containerId);
+  if(!container) return [];
+  const faixas = [];
+  container.querySelectorAll('div[id^="faixaRow_"]').forEach(row=>{
+    const min = row.querySelector('.faixa-qtd-min').value;
+    const max = row.querySelector('.faixa-qtd-max').value;
+    const preco = row.querySelector('.faixa-preco').value;
+    if(min==='' || preco==='') return;
+    faixas.push({
+      qtdMinima: Number(min),
+      qtdMaxima: max==='' ? null : Number(max),
+      precoUnitario: parseBRL(preco)
+    });
+  });
+  return faixas;
+}
+
+async function criarProduto(btn){
+  const nome = document.getElementById('pf_nome').value.trim();
+  const categoria = document.getElementById('pf_categoria').value.trim();
+  const tipo = document.getElementById('pf_tipo').value;
+  if(!nome || !categoria){
+    alert('Preencha nome e categoria antes de adicionar.');
+    return;
+  }
+  const dados = {
+    nome, categoria,
+    tipoPrecificacao: tipo
+  };
+  const unidade = document.getElementById('pf_unidade').value.trim();
+  if(unidade) dados.unidadeMedida = unidade;
+  dados.estoquePronto = document.getElementById('pf_estoque_pronto').value === 'sim';
+  dados.quantidadeEstoque = Number(document.getElementById('pf_quantidade_estoque').value || 0);
+  const estoqueMinimo = document.getElementById('pf_estoque_minimo').value;
+  if(estoqueMinimo) dados.estoqueMinimo = Number(estoqueMinimo);
+  const especificacoes = document.getElementById('pf_especificacoes').value.trim();
+  if(especificacoes) dados.especificacoesProducao = especificacoes;
+  const observacoes = document.getElementById('pf_observacoes').value.trim();
+  if(observacoes) dados.observacoes = observacoes;
+
+  if(tipo==='fixo'){
+    dados.precoPadrao = parseBRL(document.getElementById('pf_preco_padrao').value);
+  } else if(tipo==='area'){
+    dados.precoM2 = parseBRL(document.getElementById('pf_preco_m2').value);
+  } else if(tipo==='faixa_quantidade'){
+    dados.faixas = coletarFaixas('pf_faixas_lista');
+    if(dados.faixas.length===0){ alert('Adicione ao menos uma faixa de quantidade.'); return; }
+  }
+
+  setBotaoCarregando(btn, 'Adicionando...');
+  try{
+    const resp = await postToSheet({action:'produto_add', data: dados});
+    if(!resp || !resp.ok){ alert('Não consegui cadastrar o produto: ' + (resp&&resp.error||'erro desconhecido')); return; }
+    ['pf_nome','pf_categoria','pf_unidade','pf_quantidade_estoque','pf_estoque_minimo','pf_especificacoes','pf_observacoes','pf_preco_padrao','pf_preco_m2'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('pf_faixas_lista').innerHTML = '';
+    document.getElementById('pf_tipo').value = 'fixo';
+    atualizarCamposTipoProduto();
+    await carregarProdutos();
+  } finally {
+    restaurarBotao(btn);
+  }
+}
+
+async function carregarProdutos(){
+  const resp = await postToSheet({action:'produtos'});
+  if(resp && resp.ok){
+    produtosLista = resp.data || [];
+    produtosCarregados = true;
+    atualizarDatalistProdutosSku();
+    renderizarProdutos();
+  }
+}
+
+function filtrarProdutosPedido(){
+  const termo = document.getElementById('f_item_produto_busca').value.trim().toLowerCase();
+  const box = document.getElementById('produtosPedidoSugestoes');
+  if(!termo){ box.style.display = 'none'; box.innerHTML = ''; return; }
+  const resultados = produtosLista.filter(p => (p.nome||'').toLowerCase().includes(termo)).slice(0, 30);
+  if(resultados.length===0){
+    box.innerHTML = '<div style="padding:10px 12px;font-size:13px;color:var(--muted);">Nenhum produto encontrado.</div>';
+    box.style.display = 'block';
+    return;
+  }
+  box.innerHTML = resultados.map(p => `
+    <div class="sugestao-produto" style="padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--line);" onmousedown="selecionarProdutoPedido('${escapeAttr(p.id)}')">
+      <div style="font-size:13.5px;">${escapeAttr(p.nome)}</div>
+      <div style="font-size:11.5px;color:var(--muted);">SKU: ${escapeAttr(p.sku||'-')} — Estoque: ${Number(p.quantidade_estoque||0)}</div>
+    </div>
+  `).join('');
+  box.style.display = 'block';
+}
+
+function fecharSugestoesProdutoPedido(){
+  const box = document.getElementById('produtosPedidoSugestoes');
+  if(box){ box.style.display = 'none'; }
+}
+
+function selecionarProdutoPedido(id){
+  const produto = produtosLista.find(p => String(p.id)===String(id));
+  if(!produto) return;
+  document.getElementById('f_item_produto').value = produto.id;
+  document.getElementById('f_item_produto_busca').value = produto.nome;
+  fecharSugestoesProdutoPedido();
+  aoSelecionarProdutoItem();
+}
+
+function alternarTipoItemPedido(){
+  const tipo = document.getElementById('f_item_tipo').value;
+  document.getElementById('campoItemExistente').style.display = tipo==='existente' ? '' : 'none';
+  document.getElementById('campoItemPersonalizado').style.display = tipo==='personalizado' ? '' : 'none';
+  document.getElementById('campoItemValorPersonalizado').style.display = tipo==='personalizado' ? '' : 'none';
+  document.getElementById('campoItemAltura').style.display = 'none';
+  document.getElementById('campoItemLargura').style.display = 'none';
+  document.getElementById('f_item_produto').value = '';
+  document.getElementById('f_item_produto_busca').value = '';
+  fecharSugestoesProdutoPedido();
+  document.getElementById('itemPedidoAviso').innerHTML = '';
+  document.getElementById('itemPedidoPreco').innerHTML = '';
+}
+
+function produtoSelecionadoItem(){
+  const id = document.getElementById('f_item_produto').value.trim();
+  if(!id) return null;
+  return produtosLista.find(p=>String(p.id)===String(id));
+}
+
+function aoSelecionarProdutoItem(){
+  const produto = produtoSelecionadoItem();
+  const ehArea = produto && produto.tipo_precificacao === 'area';
+  document.getElementById('campoItemAltura').style.display = ehArea ? '' : 'none';
+  document.getElementById('campoItemLargura').style.display = ehArea ? '' : 'none';
+  checarEstoqueItemPedido();
+  atualizarPrecoItemPedido();
+}
+
+function precoUnitarioFaixa(produto, quantidade){
+  if(!produto.faixas || !produto.faixas.length) return null;
+  const faixa = produto.faixas.find(f => quantidade >= f.qtd_minima && (!f.qtd_maxima || quantidade <= f.qtd_maxima));
+  return faixa ? Number(faixa.preco_unitario) : null;
+}
+
+function calcularValorItemAtual(){
+  const tipo = document.getElementById('f_item_tipo').value;
+  const qtd = Number(document.getElementById('f_item_quantidade').value) || 0;
+
+  if(tipo==='personalizado'){
+    const valorUnitario = parseBRL(document.getElementById('f_item_valor_unitario').value);
+    return { valorUnitario, valorTotal: valorUnitario * qtd, valido: qtd>0 && valorUnitario>0 };
+  }
+
+  const produto = produtoSelecionadoItem();
+  if(!produto || !qtd) return { valorUnitario: 0, valorTotal: 0, valido: false };
+
+  if(produto.tipo_precificacao === 'fixo'){
+    const valorUnitario = Number(produto.preco_padrao) || 0;
+    return { valorUnitario, valorTotal: valorUnitario * qtd, valido: valorUnitario>0 };
+  }
+  if(produto.tipo_precificacao === 'faixa_quantidade'){
+    const valorUnitario = precoUnitarioFaixa(produto, qtd);
+    if(valorUnitario===null) return { valorUnitario: 0, valorTotal: 0, valido: false, erro: 'Nenhuma faixa de preço cadastrada para essa quantidade.' };
+    return { valorUnitario, valorTotal: valorUnitario * qtd, valido: true };
+  }
+  if(produto.tipo_precificacao === 'area'){
+    const alturaCm = Number(document.getElementById('f_item_altura').value) || 0;
+    const larguraCm = Number(document.getElementById('f_item_largura').value) || 0;
+    const precoM2 = Number(produto.preco_m2) || 0;
+    if(!alturaCm || !larguraCm || !precoM2) return { valorUnitario: 0, valorTotal: 0, valido: false };
+    const m2 = (alturaCm/100) * (larguraCm/100);
+    const valorTotal = m2 * qtd * precoM2;
+    return { valorUnitario: m2 * precoM2, valorTotal, valido: true, m2 };
+  }
+  return { valorUnitario: 0, valorTotal: 0, valido: false };
+}
+
+function atualizarPrecoItemPedido(){
+  const el = document.getElementById('itemPedidoPreco');
+  const calc = calcularValorItemAtual();
+  if(calc.erro){ el.textContent = '⚠️ ' + calc.erro; el.style.color = 'var(--wait)'; return; }
+  if(!calc.valido){ el.innerHTML = ''; return; }
+  el.style.color = 'var(--verde-esc)';
+  if(calc.m2 !== undefined){
+    el.textContent = 'Área: ' + calc.m2.toFixed(2) + ' m² × ' + fmt(calc.valorUnitario / calc.m2 || 0) + '/m² = Total do item: ' + fmt(calc.valorTotal);
+  } else {
+    el.textContent = 'Valor unitário: ' + fmt(calc.valorUnitario) + ' — Total do item: ' + fmt(calc.valorTotal);
+  }
+}
+
+function checarEstoqueItemPedido(){
+  const tipo = document.getElementById('f_item_tipo').value;
+  const aviso = document.getElementById('itemPedidoAviso');
+  if(tipo!=='existente'){ aviso.innerHTML=''; return; }
+  const produto = produtoSelecionadoItem();
+  const qtd = Number(document.getElementById('f_item_quantidade').value);
+  if(!produto || !qtd){ aviso.innerHTML=''; return; }
+  const estoque = Number(produto.quantidade_estoque || 0);
+  if(estoque < qtd){
+    aviso.innerHTML = '⚠️ Estoque insuficiente (' + estoque + ' disponível) — este item vai para o caminho <b>c</b> (produzir).';
+    aviso.style.color = 'var(--wait)';
+  } else {
+    aviso.innerHTML = '✅ Estoque disponível (' + estoque + ') — caminho <b>a</b>.';
+    aviso.style.color = 'var(--ok)';
+  }
+}
+
+function adicionarItemPedido(){
+  const tipo = document.getElementById('f_item_tipo').value;
+  const qtdStr = document.getElementById('f_item_quantidade').value;
+  const qtd = Number(qtdStr);
+  if(!qtdStr || !Number.isInteger(qtd) || qtd<=0){ alert('Informe uma quantidade válida: número inteiro maior que zero.'); return; }
+
+  const calc = calcularValorItemAtual();
+  if(calc.erro){ alert(calc.erro); return; }
+  if(!calc.valido){ alert('Preencha o(s) valor(es) necessário(s) para calcular o preço deste item.'); return; }
+
+  if(tipo==='existente'){
+    const produto = produtoSelecionadoItem();
+    if(!produto){ alert('Produto não encontrado. Selecione um item da lista de sugestões.'); return; }
+    const item = { produtoId: produto.id, quantidade: qtd, valorUnitario: calc.valorUnitario, valorTotal: calc.valorTotal, rotulo: produto.nome + ' (' + produto.sku + ')' };
+    if(produto.tipo_precificacao === 'area'){
+      item.alturaCm = Number(document.getElementById('f_item_altura').value);
+      item.larguraCm = Number(document.getElementById('f_item_largura').value);
+      item.rotulo += ' — ' + item.alturaCm + 'x' + item.larguraCm + 'cm';
+    }
+    itensNovoPedido.push(item);
+    document.getElementById('f_item_produto').value='';
+    document.getElementById('f_item_produto_busca').value='';
+  } else {
+    const descricao = document.getElementById('f_item_descricao').value.trim();
+    if(!descricao){ alert('Descreva o produto personalizado.'); return; }
+    itensNovoPedido.push({ descricao: descricao, quantidade: qtd, valorUnitario: calc.valorUnitario, valorTotal: calc.valorTotal, rotulo: descricao + ' (personalizado)' });
+    document.getElementById('f_item_descricao').value='';
+    document.getElementById('f_item_valor_unitario').value='';
+  }
+  document.getElementById('f_item_quantidade').value='';
+  document.getElementById('f_item_altura').value='';
+  document.getElementById('f_item_largura').value='';
+  document.getElementById('itemPedidoAviso').innerHTML='';
+  document.getElementById('itemPedidoPreco').innerHTML='';
+  renderizarItensPedido();
+  atualizarTotalPedido();
+}
+
+function removerItemPedido(idx){
+  itensNovoPedido.splice(idx,1);
+  renderizarItensPedido();
+}
+
+function renderizarItensPedido(){
+  const lista = document.getElementById('listaItensPedido');
+  if(itensNovoPedido.length===0){
+    lista.innerHTML = '<div style="color:var(--muted);font-size:12.5px;">Nenhum item adicionado ainda.</div>';
+    return;
+  }
+  lista.innerHTML = itensNovoPedido.map((it,idx)=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);">
+      <span>${escapeAttr(it.rotulo)} — qtd: ${it.quantidade} — ${fmt(it.valorTotal)}</span>
+      <button type="button" class="ghost" style="padding:2px 8px;font-size:12px;" onclick="removerItemPedido(${idx})">Remover</button>
+    </div>
+  `).join('');
+}
+
+function atualizarDatalistProdutosSku(){
+  const dl = document.getElementById('produtos_sku_list');
+  if(!dl) return;
+  dl.innerHTML = produtosLista.map(p=>`<option value="${escapeAttr(p.sku||'')}">${escapeAttr(p.sku||'')} — ${escapeAttr(p.nome)}</option>`).join('');
+}
+
+function tipoPrecLabel(t){
+  return t==='fixo' ? 'Preço fixo' : (t==='area' ? 'Por m²' : (t==='faixa_quantidade' ? 'Faixa de quantidade' : (t||'-')));
+}
+function precoResumoProduto(p){
+  if(p.tipo_precificacao==='fixo') return fmt(p.preco_padrao);
+  if(p.tipo_precificacao==='area') return fmt(p.preco_m2) + '/m²';
+  if(p.tipo_precificacao==='faixa_quantidade' && p.faixas && p.faixas.length){
+    return p.faixas.map(f=>`${f.qtd_minima}${f.qtd_maxima?'-'+f.qtd_maxima:'+'}: ${fmt(f.preco_unitario)}`).join(' · ');
+  }
+  return '-';
+}
+
+function montarFormEdicaoProduto(p){
+  return `
+    <div class="grid">
+      <div class="field"><label>Nome</label><input id="pef_nome_${p.id}" value="${escapeAttr(p.nome)}"></div>
+      <div class="field"><label>SKU</label><input id="pef_sku_${p.id}" value="${escapeAttr(p.sku||'')}"></div>
+      <div class="field"><label>Categoria</label><input id="pef_categoria_${p.id}" value="${escapeAttr(p.categoria||'')}"></div>
+      <div class="field"><label>Tipo de precificação</label>
+        <select id="pef_tipo_${p.id}" onchange="atualizarCamposTipoProdutoEdit('${p.id}')">
+          <option value="fixo" ${p.tipo_precificacao==='fixo'?'selected':''}>Fixo</option>
+          <option value="faixa_quantidade" ${p.tipo_precificacao==='faixa_quantidade'?'selected':''}>Faixa de quantidade</option>
+          <option value="area" ${p.tipo_precificacao==='area'?'selected':''}>Por m² (área)</option>
+        </select>
+      </div>
+      <div class="field" id="pef_campo_preco_padrao_${p.id}" style="${p.tipo_precificacao==='fixo'?'':'display:none;'}"><label>Preço padrão (R$)</label><input id="pef_preco_padrao_${p.id}" type="text" inputmode="numeric" value="${p.preco_padrao!=null?fmtNum(p.preco_padrao):''}" oninput="formatarMoedaDigitado(this)"></div>
+      <div class="field" id="pef_campo_preco_m2_${p.id}" style="${p.tipo_precificacao==='area'?'':'display:none;'}"><label>Preço por m² (R$)</label><input id="pef_preco_m2_${p.id}" type="text" inputmode="numeric" value="${p.preco_m2!=null?fmtNum(p.preco_m2):''}" oninput="formatarMoedaDigitado(this)"></div>
+      <div class="field"><label>Unidade de medida</label><input id="pef_unidade_${p.id}" value="${escapeAttr(p.unidade_medida||'')}"></div>
+      <div class="field"><label>Fica pronto em estoque?</label>
+        <select id="pef_estoque_pronto_${p.id}">
+          <option value="sim" ${p.estoque_pronto ? 'selected':''}>Sim — produto padrão</option>
+          <option value="nao" ${!p.estoque_pronto ? 'selected':''}>Não — personalizado</option>
+        </select>
+      </div>
+      <div class="field"><label>Quantidade em estoque</label><input id="pef_quantidade_estoque_${p.id}" type="number" value="${p.quantidade_estoque??0}"></div>
+      <div class="field"><label>Estoque mínimo</label><input id="pef_estoque_minimo_${p.id}" type="number" value="${p.estoque_minimo??''}"></div>
+      <div class="field"><label>Ativo?</label>
+        <select id="pef_ativo_${p.id}">
+          <option value="sim" ${p.ativo!==false ? 'selected':''}>Sim</option>
+          <option value="nao" ${p.ativo===false ? 'selected':''}>Não</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column: span 2;"><label>Especificações de produção</label><input id="pef_especificacoes_${p.id}" value="${escapeAttr(p.especificacoes_producao||'')}"></div>
+      <div class="field" style="grid-column: span 3;"><label>Link da arte padrão (Drive)</label><input id="pef_arte_drive_${p.id}" value="${escapeAttr(p.arte_drive_url||'')}" placeholder="https://drive.google.com/..."></div>
+      <div class="field" style="grid-column: span 3;"><label>Observações</label><input id="pef_observacoes_${p.id}" value="${escapeAttr(p.observacoes||'')}"></div>
+    </div>
+    <div id="pef_bloco_faixas_${p.id}" style="${p.tipo_precificacao==='faixa_quantidade'?'':'display:none;'}margin-top:14px;border-top:1px dashed var(--line);padding-top:14px;">
+      <div class="hint" style="margin-bottom:10px;">Faixas de quantidade — a lista abaixo substitui completamente as faixas atuais ao salvar.</div>
+      <div id="pef_faixas_lista_${p.id}"></div>
+      <button type="button" class="ghost" onclick="adicionarLinhaFaixa('pef_faixas_lista_${p.id}')" style="margin-top:8px;">+ Adicionar faixa</button>
+    </div>
+    <div class="row-btn">
+      <button class="ghost" onclick="toggleEditarProduto('${p.id}')">Cancelar</button>
+      <button class="primary" onclick="salvarEdicaoProduto('${p.id}', this)">Salvar alterações</button>
+    </div>
+  `;
+}
+
+function renderizarProdutos(){
+  const busca = (document.getElementById('pf_busca').value || '').toLowerCase().trim();
+  const visiveis = produtosLista.filter(p=>{
+    if(!busca) return true;
+    return (p.nome||'').toLowerCase().includes(busca) || (p.sku||'').toLowerCase().includes(busca) || (p.categoria||'').toLowerCase().includes(busca);
+  });
+  document.getElementById('produtosResumo').textContent = busca
+    ? `Mostrando ${visiveis.length} de ${produtosLista.length} produtos.`
+    : `${produtosLista.length} produtos cadastrados.`;
+
+  const lista = document.getElementById('listaProdutos');
+  if(visiveis.length===0){
+    lista.innerHTML = `<div class="empty">${produtosLista.length===0 ? 'Nenhum produto cadastrado ainda.' : 'Nenhum produto encontrado com essa busca.'}</div>`;
+    return;
+  }
+  lista.innerHTML = visiveis.map(p => `
+    <div class="pedido" id="produtoCard_${p.id}">
+      <div class="pedido-top">
+        <div>
+          <div class="pedido-title">${escapeAttr(p.nome)}${p.sku ? ' — '+escapeAttr(p.sku) : ''}</div>
+          <div class="pedido-sub">${escapeAttr(p.categoria||'-')} · ${tipoPrecLabel(p.tipo_precificacao)} · ${precoResumoProduto(p)}</div>
+          <div class="pedido-sub">${p.estoque_pronto ? 'Estoque: '+(p.quantidade_estoque??0) : 'Personalizado — não fica em estoque'}${p.ativo===false ? ' · <span style="color:var(--risk);font-weight:700;">Inativo</span>' : ''}</div>
+        </div>
+        <button class="ghost" onclick="toggleEditarProduto('${p.id}')">Editar</button>
+      </div>
+      <div id="produtoEdit_${p.id}" style="display:none;margin-top:14px;border-top:1px dashed var(--line);padding-top:14px;">
+        ${montarFormEdicaoProduto(p)}
+      </div>
+    </div>
+  `).join('');
+
+  visiveis.forEach(p=>{
+    if(p.tipo_precificacao==='faixa_quantidade' && p.faixas){
+      p.faixas.forEach(f=>adicionarLinhaFaixa('pef_faixas_lista_'+p.id, f));
+    }
+  });
+}
+
+function toggleEditarProduto(id){
+  const el = document.getElementById('produtoEdit_'+id);
+  if(el) el.style.display = el.style.display==='none' ? 'block' : 'none';
+}
+
+async function salvarEdicaoProduto(id, btn){
+  const tipo = document.getElementById('pef_tipo_'+id).value;
+  const dados = {
+    id,
+    nome: document.getElementById('pef_nome_'+id).value.trim(),
+    sku: document.getElementById('pef_sku_'+id).value.trim(),
+    categoria: document.getElementById('pef_categoria_'+id).value.trim(),
+    tipoPrecificacao: tipo,
+    unidadeMedida: document.getElementById('pef_unidade_'+id).value.trim(),
+    estoquePronto: document.getElementById('pef_estoque_pronto_'+id).value === 'sim',
+    quantidadeEstoque: Number(document.getElementById('pef_quantidade_estoque_'+id).value || 0),
+    estoqueMinimo: document.getElementById('pef_estoque_minimo_'+id).value ? Number(document.getElementById('pef_estoque_minimo_'+id).value) : '',
+    ativo: document.getElementById('pef_ativo_'+id).value === 'sim',
+    especificacoesProducao: document.getElementById('pef_especificacoes_'+id).value.trim(),
+    arteDriveUrl: document.getElementById('pef_arte_drive_'+id).value.trim(),
+    observacoes: document.getElementById('pef_observacoes_'+id).value.trim()
+  };
+  if(tipo==='fixo'){
+    dados.precoPadrao = parseBRL(document.getElementById('pef_preco_padrao_'+id).value);
+    dados.precoM2 = '';
+  } else if(tipo==='area'){
+    dados.precoM2 = parseBRL(document.getElementById('pef_preco_m2_'+id).value);
+    dados.precoPadrao = '';
+  } else {
+    dados.precoPadrao = '';
+    dados.precoM2 = '';
+  }
+  dados.faixas = tipo==='faixa_quantidade' ? coletarFaixas('pef_faixas_lista_'+id) : [];
+
+  setBotaoCarregando(btn, 'Salvando...');
+  try{
+    const resp = await postToSheet({action:'produto_edit', data: dados});
+    if(!resp || !resp.ok){ alert('Não consegui salvar o produto: ' + (resp&&resp.error||'erro desconhecido')); return; }
+    await carregarProdutos();
+  } finally {
+    restaurarBotao(btn);
+  }
+}
+
+// --- LOJAS ---
+let lojasListaAba = [];
+let lojasAbaCarregada = false;
+
+async function carregarLojasAba(){
+  const resp = await postToSheet({action:'lojas'});
+  if(resp && resp.ok){
+    lojasListaAba = resp.data || [];
+    lojasAbaCarregada = true;
+    renderizarLojasAba();
+  }
+}
+
+async function criarLoja(btn){
+  const nome = document.getElementById('lf_nome').value.trim();
+  if(!nome){ alert('Preencha o nome da loja.'); return; }
+  const dados = { nome };
+  const contatoNome = document.getElementById('lf_contato_nome').value.trim();
+  if(contatoNome) dados.contatoNome = contatoNome;
+  const contatoTelefone = document.getElementById('lf_contato_telefone').value.trim();
+  if(contatoTelefone) dados.contatoTelefone = contatoTelefone;
+  const cnpj = document.getElementById('lf_cnpj').value.trim();
+  if(cnpj) dados.cnpj = cnpj;
+  const endereco = document.getElementById('lf_endereco').value.trim();
+  if(endereco) dados.endereco = endereco;
+  const cidade = document.getElementById('lf_cidade').value.trim();
+  if(cidade) dados.cidade = cidade;
+  const estado = document.getElementById('lf_estado').value.trim();
+  if(estado) dados.estado = estado;
+  const cep = document.getElementById('lf_cep').value.trim();
+  if(cep) dados.cep = cep;
+
+  setBotaoCarregando(btn, 'Adicionando...');
+  try{
+    const resp = await postToSheet({action:'loja_add', data: dados});
+    if(!resp || !resp.ok){ alert('Não consegui cadastrar a loja: ' + (resp&&resp.error||'erro desconhecido')); return; }
+    ['lf_nome','lf_contato_nome','lf_contato_telefone','lf_cnpj','lf_endereco','lf_cidade','lf_estado','lf_cep'].forEach(id=>document.getElementById(id).value='');
+    await carregarLojasAba();
+    await atualizarListaLojas();
+  } finally {
+    restaurarBotao(btn);
+  }
+}
+
+function renderizarLojasAba(){
+  const busca = (document.getElementById('lf_busca').value || '').toLowerCase().trim();
+  const visiveis = lojasListaAba.filter(l=>{
+    if(!busca) return true;
+    return (l.nome||'').toLowerCase().includes(busca) || (l.cidade||'').toLowerCase().includes(busca);
+  });
+  document.getElementById('lojasResumo').textContent = busca
+    ? `Mostrando ${visiveis.length} de ${lojasListaAba.length} lojas.`
+    : `${lojasListaAba.length} lojas cadastradas.`;
+
+  const lista = document.getElementById('listaLojasAba');
+  if(visiveis.length===0){
+    lista.innerHTML = `<div class="empty">${lojasListaAba.length===0 ? 'Nenhuma loja cadastrada ainda.' : 'Nenhuma loja encontrada com essa busca.'}</div>`;
+    return;
+  }
+  lista.innerHTML = visiveis.map(l => `
+    <div class="pedido" id="lojaCard_${l.id}">
+      <div class="pedido-top">
+        <div>
+          <div class="pedido-title">${escapeAttr(l.nome)}</div>
+          <div class="pedido-sub">${escapeAttr(l.contato_nome||'-')} ${l.contato_telefone?'· '+escapeAttr(l.contato_telefone):''}</div>
+          <div class="pedido-sub">${[l.endereco,l.cidade,l.estado,l.cep].filter(Boolean).map(escapeAttr).join(' · ') || '-'}${l.cnpj?' · CNPJ '+escapeAttr(l.cnpj):''}${l.ativo===false ? ' · <span style="color:var(--risk);font-weight:700;">Inativa</span>' : ''}</div>
+        </div>
+        <button class="ghost" onclick="toggleEditarLoja('${l.id}')">Editar</button>
+      </div>
+      <div id="lojaEdit_${l.id}" style="display:none;margin-top:14px;border-top:1px dashed var(--line);padding-top:14px;">
+        <div class="grid">
+          <div class="field" style="grid-column: span 3;"><label>Nome</label><input id="lef_nome_${l.id}" value="${escapeAttr(l.nome)}"></div>
+          <div class="field"><label>Nome do contato</label><input id="lef_contato_nome_${l.id}" value="${escapeAttr(l.contato_nome||'')}"></div>
+          <div class="field"><label>Telefone do contato</label><input id="lef_contato_telefone_${l.id}" value="${escapeAttr(l.contato_telefone||'')}"></div>
+          <div class="field"><label>CNPJ</label><input id="lef_cnpj_${l.id}" value="${escapeAttr(l.cnpj||'')}"></div>
+          <div class="field" style="grid-column: span 2;"><label>Endereço</label><input id="lef_endereco_${l.id}" value="${escapeAttr(l.endereco||'')}"></div>
+          <div class="field"><label>Cidade</label><input id="lef_cidade_${l.id}" value="${escapeAttr(l.cidade||'')}"></div>
+          <div class="field"><label>Estado</label><input id="lef_estado_${l.id}" value="${escapeAttr(l.estado||'')}" maxlength="2"></div>
+          <div class="field"><label>CEP</label><input id="lef_cep_${l.id}" value="${escapeAttr(l.cep||'')}"></div>
+          <div class="field"><label>Ativo?</label>
+            <select id="lef_ativo_${l.id}">
+              <option value="sim" ${l.ativo!==false?'selected':''}>Sim</option>
+              <option value="nao" ${l.ativo===false?'selected':''}>Não</option>
+            </select>
+          </div>
+        </div>
+        <div class="row-btn">
+          <button class="ghost" onclick="toggleEditarLoja('${l.id}')">Cancelar</button>
+          <button class="primary" onclick="salvarEdicaoLoja('${l.id}', this)">Salvar alterações</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleEditarLoja(id){
+  const el = document.getElementById('lojaEdit_'+id);
+  if(el) el.style.display = el.style.display==='none' ? 'block' : 'none';
+}
+
+async function salvarEdicaoLoja(id, btn){
+  const dados = {
+    id,
+    nome: document.getElementById('lef_nome_'+id).value.trim(),
+    contatoNome: document.getElementById('lef_contato_nome_'+id).value.trim(),
+    contatoTelefone: document.getElementById('lef_contato_telefone_'+id).value.trim(),
+    cnpj: document.getElementById('lef_cnpj_'+id).value.trim(),
+    endereco: document.getElementById('lef_endereco_'+id).value.trim(),
+    cidade: document.getElementById('lef_cidade_'+id).value.trim(),
+    estado: document.getElementById('lef_estado_'+id).value.trim(),
+    cep: document.getElementById('lef_cep_'+id).value.trim(),
+    ativo: document.getElementById('lef_ativo_'+id).value === 'sim'
+  };
+  setBotaoCarregando(btn, 'Salvando...');
+  try{
+    const resp = await postToSheet({action:'loja_edit', data: dados});
+    if(!resp || !resp.ok){ alert('Não consegui salvar a loja: ' + (resp&&resp.error||'erro desconhecido')); return; }
+    await carregarLojasAba();
+    await atualizarListaLojas();
+  } finally {
+    restaurarBotao(btn);
+  }
+}
+
+// --- ESTOQUE ---
+let estoqueHistorico = [];
+let estoqueCarregado = false;
+
+async function carregarEstoque(){
+  if(!produtosCarregados) await carregarProdutos();
+  const resp = await postToSheet({action:'estoque_historico'});
+  if(resp && resp.ok){
+    estoqueHistorico = resp.data || [];
+    estoqueCarregado = true;
+    renderizarEstoque();
+  }
+}
+
+async function movimentarEstoque(btn){
+  const sku = document.getElementById('ef_sku').value.trim();
+  const tipo = document.getElementById('ef_tipo').value;
+  const quantidade = document.getElementById('ef_quantidade').value;
+  if(!sku || !quantidade){ alert('Preencha o produto e a quantidade.'); return; }
+
+  setBotaoCarregando(btn, 'Lançando...');
+  try{
+    const dadosMov = { sku, tipo, quantidade: Number(quantidade) };
+    const observacao = document.getElementById('ef_observacao').value.trim();
+    if(observacao) dadosMov.observacao = observacao;
+    const resp = await postToSheet({action:'estoque_movimentar', data: dadosMov});
+    if(!resp || !resp.ok){ alert('Não consegui lançar a movimentação: ' + (resp&&resp.error||'erro desconhecido')); return; }
+    document.getElementById('ef_sku').value = '';
+    document.getElementById('ef_quantidade').value = '';
+    document.getElementById('ef_observacao').value = '';
+    produtosCarregados = false; // força recarregar o saldo na próxima vez que a aba Produtos abrir
+    await carregarEstoque();
+  } finally {
+    restaurarBotao(btn);
+  }
+}
+
+function renderizarEstoque(){
+  document.getElementById('estoqueResumo').textContent = estoqueHistorico.length
+    ? `${estoqueHistorico.length} movimentações registradas.`
+    : 'Nenhuma movimentação registrada ainda.';
+
+  const lista = document.getElementById('listaEstoque');
+  if(estoqueHistorico.length===0){
+    lista.innerHTML = `<div class="empty">Nenhuma movimentação registrada ainda.</div>`;
+    return;
+  }
+  lista.innerHTML = estoqueHistorico.map(m => `
+    <div class="pedido">
+      <div class="pedido-top">
+        <div>
+          <div class="pedido-title">${escapeAttr(m.produto_nome || m.produto_sku || 'Produto')}${m.produto_sku ? ' — '+escapeAttr(m.produto_sku) : ''}</div>
+          <div class="pedido-sub">${fmtAny(m.data)}${m.observacao ? ' · '+escapeAttr(m.observacao) : ''}</div>
+        </div>
+        <span class="badge ${m.tipo==='Entrada' ? 'ok' : 'risk'}">${m.tipo==='Entrada' ? '+ ' : '- '}${m.quantidade}</span>
+      </div>
+    </div>
+  `).join('');
 }
 
 popularListaLojas(LOJAS_PADRAO);
