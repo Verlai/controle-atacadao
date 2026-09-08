@@ -976,8 +976,9 @@ async function sessaoExpirada(){
 }
 
 function aplicarPermissoesUI(){
-  document.querySelectorAll('[data-role="diretor"]').forEach(el=>{
-    el.style.display = (perfilAtual==='diretor') ? '' : 'none';
+  document.querySelectorAll('[data-role]').forEach(el=>{
+    const roles = el.getAttribute('data-role').split(',').map(r=>r.trim());
+    el.style.display = roles.includes(perfilAtual) ? '' : 'none';
   });
 }
 
@@ -2856,7 +2857,7 @@ function renderizarProdutos(){
         </div>
         <div style="display:flex;gap:8px;align-items:center;">
           <button class="ghost" onclick="toggleEditarProduto('${p.id}')">Editar</button>
-          <button class="danger" data-role="diretor" onclick="excluirProduto('${p.id}',this)">Excluir</button>
+          <button class="danger" data-role="diretor,grafica" onclick="excluirProduto('${p.id}',this)">Excluir</button>
         </div>
       </div>
       <div id="produtoEdit_${p.id}" style="display:none;margin-top:14px;border-top:1px dashed var(--line);padding-top:14px;">
