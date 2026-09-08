@@ -2855,6 +2855,7 @@ function renderizarProdutos(){
           <div class="pedido-sub">${p.estoque_pronto ? 'Estoque: '+(p.quantidade_estoque??0) : 'Personalizado — não fica em estoque'}${p.ativo===false ? ' · <span style="color:var(--risk);font-weight:700;">Inativo</span>' : ''}</div>
         </div>
         <button class="ghost" onclick="toggleEditarProduto('${p.id}')">Editar</button>
+        <button class="danger" data-role="diretor" onclick="excluirProduto('${p.id}',this)">Excluir</button>
       </div>
       <div id="produtoEdit_${p.id}" style="display:none;margin-top:14px;border-top:1px dashed var(--line);padding-top:14px;">
         ${montarFormEdicaoProduto(p)}
@@ -2867,6 +2868,19 @@ function renderizarProdutos(){
       p.faixas.forEach(f=>adicionarLinhaFaixa('pef_faixas_lista_'+p.id, f));
     }
   });
+  aplicarPermissoesUI();
+}
+
+async function excluirProduto(id, btn){
+  if(!confirm('Excluir esse produto do catálogo? Se ele tiver uma pasta no Drive, ela vai pra lixeira. Isso não pode ser desfeito por aqui.')) return;
+  setBotaoCarregando(btn, 'Excluindo...');
+  try{
+    const resp = await postToSheet({action:'produto_delete', idProduto:id});
+    if(!resp || !resp.ok){ alert('Não consegui excluir o produto: ' + (resp&&resp.error||'erro desconhecido')); return; }
+    await carregarProdutos();
+  } finally {
+    restaurarBotao(btn);
+  }
 }
 
 function toggleEditarProduto(id){
