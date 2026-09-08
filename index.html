@@ -1197,6 +1197,10 @@ async function addPedido(btn){
     alert('Preencha nº do pedido, data do pedido, loja e o prazo estimado de entrega antes de adicionar.');
     return;
   }
+  if(!/^[A-Za-z0-9]+$/.test(idPedido)){
+    alert('O nº do pedido só aceita letras e números, sem espaços ou caracteres especiais (ex: parênteses, ponto, vírgula).');
+    return;
+  }
   if(itensNovoPedido.length===0){
     alert('Adicione pelo menos um item ao pedido antes de continuar.');
     return;
