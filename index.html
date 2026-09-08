@@ -475,7 +475,12 @@
       </div>
       <div class="field" id="pf_campo_preco_padrao"><label>Preço padrão (R$)</label><input id="pf_preco_padrao" type="text" inputmode="numeric" placeholder="0,00" oninput="formatarMoedaDigitado(this)"></div>
       <div class="field" id="pf_campo_preco_m2" style="display:none;"><label>Preço por m² (R$)</label><input id="pf_preco_m2" type="text" inputmode="numeric" placeholder="0,00" oninput="formatarMoedaDigitado(this)"></div>
-      <div class="field"><label>Unidade de medida</label><input id="pf_unidade" placeholder="Ex: unidade, m²"></div>
+      <div class="field"><label>Unidade de medida</label>
+        <select id="pf_unidade">
+          <option value="unidade">unidade</option>
+          <option value="m²">m²</option>
+        </select>
+      </div>
       <div class="field"><label>Produto fica pronto em estoque?</label>
         <select id="pf_estoque_pronto">
           <option value="sim">Sim — produto padrão</option>
@@ -2449,6 +2454,7 @@ function atualizarCamposTipoProduto(){
   document.getElementById('pf_campo_preco_padrao').style.display = tipo==='fixo' ? '' : 'none';
   document.getElementById('pf_campo_preco_m2').style.display = tipo==='area' ? '' : 'none';
   document.getElementById('pf_bloco_faixas').style.display = tipo==='faixa_quantidade' ? '' : 'none';
+  document.getElementById('pf_unidade').value = tipo==='area' ? 'm²' : 'unidade';
 }
 function atualizarCamposTipoProdutoEdit(id){
   const tipo = document.getElementById('pef_tipo_'+id).value;
@@ -2545,7 +2551,7 @@ async function criarProduto(btn){
   try{
     const resp = await postToSheet({action:'produto_add', data: dados});
     if(!resp || !resp.ok){ alert('Não consegui cadastrar o produto: ' + (resp&&resp.error||'erro desconhecido')); return; }
-    ['pf_nome','pf_categoria_nova','pf_unidade','pf_quantidade_estoque','pf_estoque_minimo','pf_especificacoes','pf_observacoes','pf_preco_padrao','pf_preco_m2'].forEach(id=>document.getElementById(id).value='');
+    ['pf_nome','pf_categoria_nova','pf_quantidade_estoque','pf_estoque_minimo','pf_especificacoes','pf_observacoes','pf_preco_padrao','pf_preco_m2'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('pf_categoria_nova_chk').checked = false;
     toggleCategoriaNova();
     document.getElementById('pf_faixas_lista').innerHTML = '';
@@ -2789,7 +2795,12 @@ function montarFormEdicaoProduto(p){
       </div>
       <div class="field" id="pef_campo_preco_padrao_${p.id}" style="${p.tipo_precificacao==='fixo'?'':'display:none;'}"><label>Preço padrão (R$)</label><input id="pef_preco_padrao_${p.id}" type="text" inputmode="numeric" value="${p.preco_padrao!=null?fmtNum(p.preco_padrao):''}" oninput="formatarMoedaDigitado(this)"></div>
       <div class="field" id="pef_campo_preco_m2_${p.id}" style="${p.tipo_precificacao==='area'?'':'display:none;'}"><label>Preço por m² (R$)</label><input id="pef_preco_m2_${p.id}" type="text" inputmode="numeric" value="${p.preco_m2!=null?fmtNum(p.preco_m2):''}" oninput="formatarMoedaDigitado(this)"></div>
-      <div class="field"><label>Unidade de medida</label><input id="pef_unidade_${p.id}" value="${escapeAttr(p.unidade_medida||'')}"></div>
+      <div class="field"><label>Unidade de medida</label>
+        <select id="pef_unidade_${p.id}">
+          <option value="unidade" ${(p.unidade_medida||'unidade')==='unidade'?'selected':''}>unidade</option>
+          <option value="m²" ${p.unidade_medida==='m²'?'selected':''}>m²</option>
+        </select>
+      </div>
       <div class="field"><label>Fica pronto em estoque?</label>
         <select id="pef_estoque_pronto_${p.id}">
           <option value="sim" ${p.estoque_pronto ? 'selected':''}>Sim — produto padrão</option>
