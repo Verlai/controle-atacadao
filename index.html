@@ -3024,14 +3024,88 @@ function renderizarLojasAba(){
           <button class="ghost" onclick="toggleEditarLoja('${l.id}')">Cancelar</button>
           <button class="primary" onclick="salvarEdicaoLoja('${l.id}', this)">Salvar alterações</button>
         </div>
+        <div style="margin-top:14px;border-top:1px dashed var(--line);padding-top:14px;">
+          <label style="font-weight:600;">Contatos que fazem pedido por essa loja (WhatsApp)</label>
+          <div class="hint" style="margin-top:2px;">Toda pessoa que pode mandar mensagem no WhatsApp em nome dessa loja precisa estar aqui — é assim que a Iara reconhece quem está falando.</div>
+          <div id="lojaContatosLista_${l.id}" style="margin:10px 0;display:flex;flex-direction:column;gap:6px;">
+            <div class="hint">Carregando...</div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;">
+            <div class="field" style="flex:1;min-width:140px;"><label>Nome</label><input id="lcf_nome_${l.id}" placeholder="Nome da pessoa"></div>
+            <div class="field" style="flex:1;min-width:140px;"><label>Telefone</label><input id="lcf_telefone_${l.id}" placeholder="Só números, com DDD"></div>
+            <button class="ghost" onclick="adicionarContatoLoja('${l.id}', this)">Adicionar contato</button>
+          </div>
+        </div>
       </div>
     </div>
   `).join('');
 }
 
+let lojaContatosCache = {};
+
+async function carregarContatosLoja(id){
+  const resp = await postToSheet({action:'loja_contatos_listar', data:{ lojaId: id }});
+  if(resp && resp.ok){
+    lojaContatosCache[id] = resp.data || [];
+    renderizarContatosLoja(id);
+  } else {
+    const el = document.getElementById('lojaContatosLista_'+id);
+    if(el) el.innerHTML = '<div class="hint">Não consegui carregar os contatos.</div>';
+  }
+}
+
+function renderizarContatosLoja(id){
+  const el = document.getElementById('lojaContatosLista_'+id);
+  if(!el) return;
+  const contatos = lojaContatosCache[id] || [];
+  if(contatos.length === 0){
+    el.innerHTML = '<div class="hint">Nenhum contato cadastrado ainda.</div>';
+    return;
+  }
+  el.innerHTML = contatos.map(c => `
+    <div class="pedido-sub" style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+      <span>${escapeAttr(c.nome_contato)} · ${escapeAttr(c.telefone)}${c.origem==='recepcionista_iara' ? ' · <span style="opacity:.7">(cadastrado pela Iara)</span>' : ''}</span>
+      <button class="ghost" style="padding:2px 8px;font-size:12px;" onclick="desativarContatoLoja('${c.id}','${id}', this)">Remover</button>
+    </div>
+  `).join('');
+}
+
+async function adicionarContatoLoja(id, btn){
+  const nome = document.getElementById('lcf_nome_'+id).value.trim();
+  const telefone = document.getElementById('lcf_telefone_'+id).value.trim();
+  if(!nome || !telefone){ alert('Preencha nome e telefone do contato.'); return; }
+  setBotaoCarregando(btn, 'Adicionando...');
+  try{
+    const resp = await postToSheet({action:'loja_contato_add', data:{ lojaId:id, nomeContato:nome, telefone }});
+    if(!resp || !resp.ok){ alert('Não consegui adicionar o contato: ' + (resp&&resp.error||'erro desconhecido')); return; }
+    document.getElementById('lcf_nome_'+id).value = '';
+    document.getElementById('lcf_telefone_'+id).value = '';
+    await carregarContatosLoja(id);
+  } finally {
+    restaurarBotao(btn);
+  }
+}
+
+async function desativarContatoLoja(contatoId, lojaId, btn){
+  if(!confirm('Remover esse contato da loja?')) return;
+  setBotaoCarregando(btn, 'Removendo...');
+  try{
+    const resp = await postToSheet({action:'loja_contato_toggle', data:{ id: contatoId, ativo: false }});
+    if(!resp || !resp.ok){ alert('Não consegui remover o contato: ' + (resp&&resp.error||'erro desconhecido')); return; }
+    await carregarContatosLoja(lojaId);
+  } finally {
+    restaurarBotao(btn);
+  }
+}
+
 function toggleEditarLoja(id){
   const el = document.getElementById('lojaEdit_'+id);
-  if(el) el.style.display = el.style.display==='none' ? 'block' : 'none';
+  if(!el) return;
+  const abrindo = el.style.display === 'none';
+  el.style.display = abrindo ? 'block' : 'none';
+  if(abrindo && !lojaContatosCache[id]){
+    carregarContatosLoja(id);
+  }
 }
 
 async function salvarEdicaoLoja(id, btn){
