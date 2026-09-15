@@ -220,7 +220,7 @@
     <!-- 1º Informações do pedido -->
     <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:8px;">1. Informações do pedido</label>
     <div class="grid">
-      <div class="field"><label>Nº do pedido</label><input id="f_id" placeholder="Ex: 18789"></div>
+      <div class="field"><label>Nº do pedido (opcional)</label><input id="f_id" placeholder="Deixe em branco pra gerar automático. Preencha só pra desdobrar (ex: 18942F)"></div>
       <div class="field"><label>Data do pedido</label><input id="f_data_pedido" type="date"></div>
       <div class="field"><label>Loja / Unidade Atacadão</label>
         <input id="f_loja" list="lojas_list" placeholder="Comece a digitar para buscar..." onchange="sincronizarEnderecoFreteComLoja()">
@@ -1193,11 +1193,11 @@ async function addPedido(btn){
   const dataEntrega = document.getElementById('f_data_entrega').value;
   const { valorProduto, valorFrete, requerInstalacao, valorInstalacao, ajusteValor, total } = calcularValorTotalPedido();
 
-  if(!idPedido || !dataPedido || !loja || !dataEntrega){
-    alert('Preencha nº do pedido, data do pedido, loja e o prazo estimado de entrega antes de adicionar.');
+  if(!dataPedido || !loja || !dataEntrega){
+    alert('Preencha data do pedido, loja e o prazo estimado de entrega antes de adicionar.');
     return;
   }
-  if(!/^[A-Za-z0-9]+$/.test(idPedido)){
+  if(idPedido && !/^[A-Za-z0-9]+$/.test(idPedido)){
     alert('O nº do pedido só aceita letras e números, sem espaços ou caracteres especiais (ex: parênteses, ponto, vírgula).');
     return;
   }
@@ -1213,7 +1213,7 @@ async function addPedido(btn){
   const localFrete = document.getElementById('f_local_frete').value.trim();
 
   const dados = {
-    idPedido: idPedido,
+    idPedido: idPedido || null,
     dataPedido: dataPedido,
     loja: loja,
     valorProduto: valorProduto,
