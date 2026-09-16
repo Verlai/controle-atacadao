@@ -2225,7 +2225,7 @@ function renderModalDetalhe(id, detalhe){
   const podeEditarOperacional = ehDesigner
     ? (statusOp.key === 'atend_humano')
     : (['diretor','grafica','assistente'].includes(perfilAtual) && p.dataSinal && !p.dataEntregaReal);
-  const podeCorrigirOperacional = perfilAtual==='diretor' && podeEditarOperacional;
+  const podeCorrigirOperacional = ['diretor','grafica','assistente'].includes(perfilAtual) && podeEditarOperacional;
   const proximoEstagioModal = podeEditarOperacional ? proximoEstagio(p) : null;
   const podeEditarArte = ['diretor','grafica','assistente','designer'].includes(perfilAtual);
   const timelineSteps = construirTimelineSteps(p, statusOp);
