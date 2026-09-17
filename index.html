@@ -2182,17 +2182,41 @@ async function enviarObservacao(id, btn){
   }
 }
 
+function renderEscolhaArte(pedidoId, it){
+  const uploadInputId = `uploadJpeg_${it.id}`;
+  const linkInputId = `arteItem_${it.id}`;
+  const uploadBoxId = `uploadBox_${it.id}`;
+  const linkBoxId = `linkBox_${it.id}`;
+  const radioName = `metodoArte_${it.id}`;
+  return `
+    <div style="display:flex;gap:12px;font-size:11px;margin-bottom:4px;">
+      <label style="cursor:pointer;"><input type="radio" name="${radioName}" checked onchange="document.getElementById('${uploadBoxId}').style.display='flex';document.getElementById('${linkBoxId}').style.display='none';"> Enviar JPEG</label>
+      <label style="cursor:pointer;"><input type="radio" name="${radioName}" onchange="document.getElementById('${uploadBoxId}').style.display='none';document.getElementById('${linkBoxId}').style.display='flex';"> Colar link da pasta</label>
+    </div>
+    <div id="${uploadBoxId}" style="display:flex;gap:6px;">
+      <input type="file" id="${uploadInputId}" accept=".jpg,.jpeg,image/jpeg" style="flex:1;font-size:12px;">
+      <button onclick="enviarArteItemJpeg('${pedidoId}','${it.id}','${uploadInputId}',this)">Enviar</button>
+    </div>
+    <div id="${linkBoxId}" style="display:none;gap:6px;">
+      <input id="${linkInputId}" placeholder="Link da pasta (Drive)" style="flex:1;font-size:12px;">
+      <button onclick="salvarArteItem('${pedidoId}','${it.id}','${linkInputId}',this)">Salvar</button>
+    </div>
+  `;
+}
+
 function renderArteItem(pedidoId, it, podeEditarArte){
   if(it.personalizado){
-    const linkAtual = it.arte_personalizada_url
-      ? `<a href="${escapeAttr(it.arte_personalizada_url)}" target="_blank" rel="noopener" style="display:block;font-size:11.5px;margin-bottom:4px;">Ver arte 🔗</a>`
-      : `<div style="font-size:11.5px;color:var(--danger, #c0392b);margin-bottom:4px;">⚠️ Falta a arte</div>`;
-    if(!podeEditarArte) return linkAtual;
-    const inputId = `arteItem_${it.id}`;
-    return `${linkAtual}<div style="display:flex;gap:6px;">
-      <input id="${inputId}" placeholder="Link da pasta (Drive)" value="${escapeAttr(it.arte_personalizada_url||'')}" style="flex:1;font-size:12px;">
-      <button onclick="salvarArteItem('${pedidoId}','${it.id}','${inputId}',this)">Salvar</button>
-    </div>`;
+    if(it.arte_personalizada_url){
+      const linkAtual = `<a href="${escapeAttr(it.arte_personalizada_url)}" target="_blank" rel="noopener" style="display:block;font-size:11.5px;margin-bottom:4px;">Ver arte 🔗</a>`;
+      if(!podeEditarArte) return linkAtual;
+      const trocaId = `trocaArte_${it.id}`;
+      return `${linkAtual}
+        <div id="${trocaId}" style="display:none;margin-top:4px;">${renderEscolhaArte(pedidoId, it)}</div>
+        <button style="font-size:10.5px;padding:2px 8px;" onclick="document.getElementById('${trocaId}').style.display='block'; this.style.display='none';">Trocar arte</button>`;
+    }
+    const faltaArte = '<div style="font-size:11.5px;color:var(--danger, #c0392b);margin-bottom:4px;">⚠️ Falta a arte</div>';
+    if(!podeEditarArte) return faltaArte;
+    return `${faltaArte}${renderEscolhaArte(pedidoId, it)}`;
   }
   return it.arte_drive_url
     ? `<a href="${escapeAttr(it.arte_drive_url)}" target="_blank" rel="noopener" style="font-size:11.5px;">Ver arte 🔗</a>`
@@ -2208,6 +2232,30 @@ async function salvarArteItem(pedidoId, itemId, inputId, btn){
     const resp = await postToSheet({action:'pedido_item_arte_add', data:{itemId, arteUrl}, perfil: perfilAtual});
     if(!resp || !resp.ok){ alert('Não consegui salvar a arte: ' + (resp&&resp.error||'erro desconhecido')); return; }
     await carregarDetalhePedido(pedidoId);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function enviarArteItemJpeg(pedidoId, itemId, inputId, btn){
+  const input = document.getElementById(inputId);
+  const arquivo = input && input.files && input.files[0];
+  if(!arquivo){ alert('Escolha um arquivo JPEG antes de enviar.'); return; }
+  if(!/\.(jpe?g)$/i.test(arquivo.name)){ alert('Envie um arquivo .jpg ou .jpeg.'); return; }
+  if(arquivo.size > 8*1024*1024){ alert('Arquivo muito grande (máx. 8MB). Comprima a imagem antes de enviar.'); return; }
+  btn.disabled = true;
+  try{
+    const base64 = await new Promise((resolve,reject)=>{
+      const r = new FileReader();
+      r.onload = ()=> resolve(String(r.result).split(',')[1]);
+      r.onerror = ()=> reject(new Error('Falha ao ler o arquivo.'));
+      r.readAsDataURL(arquivo);
+    });
+    const resp = await postToSheet({action:'pedido_item_arte_upload', data:{itemId, nomeArquivo: arquivo.name, arquivoBase64: base64}, perfil: perfilAtual});
+    if(!resp || !resp.ok){ alert('Não consegui enviar a arte: ' + (resp&&resp.error||'erro desconhecido')); return; }
+    await carregarDetalhePedido(pedidoId);
+  } catch(e){
+    alert('Não consegui ler ou enviar o arquivo: ' + (e&&e.message||'erro desconhecido'));
   } finally {
     btn.disabled = false;
   }
