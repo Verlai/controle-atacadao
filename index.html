@@ -2272,7 +2272,10 @@ async function enviarArteItemJpeg(pedidoId, itemId, inputId, btn){
       alert('O arquivo foi enviado, mas não consegui processar a arte: ' + (resp&&resp.error||'erro desconhecido'));
       return;
     }
-    await carregarDetalhePedido(pedidoId);
+    // Atualiza o modal (pra mostrar "Ver arte" na hora) e a lista principal
+    // (pra liberar o avanço pra produção sem precisar de F5 — é a lista
+    // principal, não o modal, que guarda o dado usado nessa trava).
+    await Promise.all([ carregarDetalhePedido(pedidoId), atualizarApenasPedidos() ]);
   } catch(e){
     alert('Não consegui enviar o arquivo: ' + (e&&e.message||'erro desconhecido'));
   } finally {
