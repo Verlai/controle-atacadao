@@ -144,6 +144,7 @@
   .insight-box{background:var(--verde-claro);border:1px solid var(--line);border-left:4px solid var(--verde);border-radius:8px;padding:16px 18px;font-size:14px;line-height:1.65;color:var(--ink);margin-bottom:16px;}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body>
 <div id="loginScreen" style="display:flex;">
@@ -1144,6 +1145,15 @@ function entrarNoSistema(){
 }
 
 const DEFAULT_SCRIPT_URL = 'https://gvh-n8n.kjb64n.easypanel.host/webhook/ponte';
+
+// Upload direto de arte pro Supabase Storage (bypassa o limite de payload do n8n).
+// A anon/publishable key é feita pra ficar exposta no navegador — o que protege o bucket
+// é a política de acesso (RLS) configurada pra ele, não o segredo da chave.
+const SUPABASE_URL = 'https://lyaxkmbyzazkcvphzzjd.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_lRw9ysaVin9fHwd78b0sUQ_cYMbZgHk';
+const SUPABASE_BUCKET_ARTES = 'artes-temp';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 let scriptUrl = null;
 let usingServer = false;
 let lojasPorId = {};
@@ -2238,22 +2248,33 @@ async function enviarArteItemJpeg(pedidoId, itemId, inputId, btn){
   const arquivo = input && input.files && input.files[0];
   if(!arquivo){ alert('Escolha um arquivo JPEG antes de enviar.'); return; }
   if(!/\.(jpe?g)$/i.test(arquivo.name)){ alert('Envie um arquivo .jpg ou .jpeg.'); return; }
-  if(arquivo.size > 8*1024*1024){ alert('Arquivo muito grande (máx. 8MB). Comprima a imagem antes de enviar.'); return; }
+  if(arquivo.size > 50*1024*1024){ alert('Arquivo muito grande (máx. 50MB). Comprima a imagem antes de enviar.'); return; }
   const textoOriginal = btn.innerHTML;
   btn.disabled = true;
   btn.innerHTML = 'Enviando...';
   try{
-    const base64 = await new Promise((resolve,reject)=>{
-      const r = new FileReader();
-      r.onload = ()=> resolve(String(r.result).split(',')[1]);
-      r.onerror = ()=> reject(new Error('Falha ao ler o arquivo.'));
-      r.readAsDataURL(arquivo);
-    });
-    const resp = await postToSheet({action:'pedido_item_arte_upload', data:{itemId, nomeArquivo: arquivo.name, arquivoBase64: base64}, perfil: perfilAtual});
-    if(!resp || !resp.ok){ alert('Não consegui enviar a arte: ' + (resp&&resp.error||'erro desconhecido')); return; }
+    // Upload direto pro Supabase Storage (bucket "artes-temp"), sem passar pelo n8n.
+    // Caminho único por item+timestamp pra nunca colidir com outro upload.
+    const extensao = arquivo.name.toLowerCase().endsWith('.jpeg') ? 'jpeg' : 'jpg';
+    const caminhoStorage = `${itemId}/${Date.now()}.${extensao}`;
+    const { error: erroUpload } = await supabaseClient.storage
+      .from(SUPABASE_BUCKET_ARTES)
+      .upload(caminhoStorage, arquivo, { contentType: 'image/jpeg', upsert: false });
+    if(erroUpload){
+      alert('Não consegui enviar o arquivo pro Storage: ' + erroUpload.message);
+      return;
+    }
+
+    // Agora só avisa o n8n onde o arquivo está — ele busca lá, sobe pro Drive,
+    // gera a miniatura e apaga o temporário do Storage.
+    const resp = await postToSheet({action:'pedido_item_arte_upload', data:{itemId, nomeArquivo: arquivo.name, storageBucket: SUPABASE_BUCKET_ARTES, storagePath: caminhoStorage}, perfil: perfilAtual});
+    if(!resp || !resp.ok){
+      alert('O arquivo foi enviado, mas não consegui processar a arte: ' + (resp&&resp.error||'erro desconhecido'));
+      return;
+    }
     await carregarDetalhePedido(pedidoId);
   } catch(e){
-    alert('Não consegui ler ou enviar o arquivo: ' + (e&&e.message||'erro desconhecido'));
+    alert('Não consegui enviar o arquivo: ' + (e&&e.message||'erro desconhecido'));
   } finally {
     btn.disabled = false;
     btn.innerHTML = textoOriginal;
