@@ -1160,7 +1160,7 @@ let lojasPorId = {};
 let lojasCompletas = [];
 let itensNovoPedido = [];
 let pollTimer = null;
-const INTERVALO_ATUALIZACAO_MS = 30000; // busca mudanças no banco de dados a cada 30s
+const INTERVALO_ATUALIZACAO_MS = 300000; // rede de segurança (Realtime já atualiza na hora; isso só cobre queda de conexão)
 
 async function getScriptUrl(){
   if(scriptUrl) return scriptUrl;
@@ -1271,6 +1271,24 @@ function iniciarAtualizacaoAutomatica(){
   }, INTERVALO_ATUALIZACAO_MS);
 }
 
+// Realtime: o banco avisa (sem mandar nenhum dado, só "algo mudou em X") toda
+// vez que um pedido, item ou status muda. A gente escuta esse aviso e busca
+// a lista atualizada na hora, pela rota de sempre (n8n) — o aviso em si não
+// expõe nenhuma tabela pra chave anon, só sinaliza "vai buscar de novo".
+let timerDebounceRealtime = null;
+function agendaAtualizacaoRealtime(){
+  clearTimeout(timerDebounceRealtime);
+  timerDebounceRealtime = setTimeout(()=>{ atualizarApenasPedidos(); }, 800);
+}
+function iniciarEscutaRealtime(){
+  supabaseClient
+    .channel('pedidos-mudancas', { config: { private: true } })
+    .on('broadcast', { event: 'INSERT' }, agendaAtualizacaoRealtime)
+    .on('broadcast', { event: 'UPDATE' }, agendaAtualizacaoRealtime)
+    .on('broadcast', { event: 'DELETE' }, agendaAtualizacaoRealtime)
+    .subscribe();
+}
+
 async function sincronizar(){
   const dados = await fetchFromSheet();
   if(dados){
@@ -1315,6 +1333,7 @@ async function load(){
       await atualizarListaLojas();
       atualizarIndicadorConexao();
       iniciarAtualizacaoAutomatica();
+      iniciarEscutaRealtime();
       await carregarCarteira();
       render();
       return;
