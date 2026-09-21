@@ -98,6 +98,9 @@
   .item-status.pendente{background:var(--wait-bg);color:var(--wait);}
   .item-status.feito{background:var(--ok-bg);color:var(--ok);}
   .btn-voltar{background:#fff;border:1px solid var(--risk);color:var(--risk);border-radius:6px;font-size:11px;padding:5px 9px;cursor:pointer;white-space:nowrap;}
+  .item-linha .info .item-links{margin-top:5px;display:flex;gap:8px;flex-wrap:wrap;}
+  .item-linha .info .item-links a{font-size:11px;font-weight:600;color:var(--verde-esc);text-decoration:none;border:1px solid var(--verde-esc);border-radius:6px;padding:3px 8px;white-space:nowrap;}
+  .item-linha .info .item-links a:hover{background:var(--verde-esc);color:#fff;}
 </style>
 </head>
 <body>
@@ -466,9 +469,13 @@ async function abrirDetalhe(numeroPedido, manterAberto){
       const botaoVoltar = (feito && podeVoltar)
         ? '<button class="btn-voltar" onclick="reverterItem(&quot;' + it.item_id + '&quot;)">Voltar</button>'
         : '';
+      const links = [];
+      if (it.arte_completa_url) links.push('<a href="' + it.arte_completa_url + '" target="_blank" rel="noopener">Baixar arte</a>');
+      if (it.os_pdf_url) links.push('<a href="' + it.os_pdf_url + '" target="_blank" rel="noopener">Baixar OS</a>');
+      const linksHtml = links.length ? '<div class="item-links">' + links.join('') + '</div>' : '';
       return '<div class="item-linha">' + img +
         '<div class="info"><div class="nome">' + escapeHtml(it.descricao) + '</div>' +
-        '<div class="sub">Qtd: ' + it.quantidade + espec + '</div></div>' +
+        '<div class="sub">Qtd: ' + it.quantidade + espec + '</div>' + linksHtml + '</div>' +
         '<span class="item-status ' + (feito ? 'feito' : 'pendente') + '">' + rotulo + '</span>' +
         botaoVoltar +
       '</div>';
