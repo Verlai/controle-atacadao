@@ -365,8 +365,10 @@
       <div class="field"><label>Loja</label>
         <input id="f_filtro_loja" list="lojas_list" placeholder="Todas as lojas — comece a digitar..." onchange="aplicarFiltros()">
       </div>
-      <div class="field"><label>Status financeiro</label>
-        <select id="f_filtro_status" onchange="aplicarFiltros()"><option value="">Todos os status</option></select>
+      <div class="field" style="position:relative;">
+        <label>Status financeiro</label>
+        <button type="button" id="statusFinBtn" onclick="toggleStatusFinPainel(event)" style="width:100%;text-align:left;background:#fff;">Todos os status</button>
+        <div id="statusFinPainel" style="display:none;position:absolute;top:100%;left:0;margin-top:4px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 14px;z-index:30;box-shadow:0 8px 20px rgba(0,0,0,.14);min-width:260px;"></div>
       </div>
       <div class="field" style="position:relative;">
         <label>Filtrar por condição</label>
@@ -1606,7 +1608,7 @@ async function excluir(id, btn){
 }
 
 let filtroId = '';
-let filtroStatus = '';
+let filtroStatusMulti = [];
 let filtroStatusOp = '';
 let filtroCaminho = '';
 let filtroLoja = '';
@@ -1718,7 +1720,7 @@ function statusKeyOf(p){
 
 function filtroPassa(p){
   if(filtroId && (p.idPedido||'').toString().trim().toLowerCase()!==filtroId.trim().toLowerCase()) return false;
-  if(filtroStatus && statusKeyOf(p)!==filtroStatus) return false;
+  if(filtroStatusMulti.length && !filtroStatusMulti.includes(statusKeyOf(p))) return false;
   if(filtroStatusOp && calcStatusOperacional(p).key!==filtroStatusOp) return false;
   if(filtroCaminho && caminhoDe(p)!==filtroCaminho) return false;
   if(filtroLoja && p.loja!==filtroLoja) return false;
@@ -1745,26 +1747,46 @@ function atualizarLabelCondFiltro(){
   document.getElementById('condFiltroBtn').textContent = marcados.length ? marcados.join(', ') : 'Nenhuma selecionada';
 }
 
+function toggleStatusFinPainel(ev){
+  if(ev) ev.stopPropagation();
+  const painel = document.getElementById('statusFinPainel');
+  painel.style.display = painel.style.display==='none' ? 'block' : 'none';
+}
+document.addEventListener('click', function(ev){
+  const painel = document.getElementById('statusFinPainel');
+  const btn = document.getElementById('statusFinBtn');
+  if(!painel || painel.style.display==='none') return;
+  if(!painel.contains(ev.target) && ev.target!==btn) painel.style.display='none';
+});
+function atualizarLabelStatusFin(){
+  const marcados = STATUS_ORDER.filter(s => filtroStatusMulti.includes(s.key)).map(s => s.emoji + ' ' + s.label);
+  document.getElementById('statusFinBtn').textContent = marcados.length ? marcados.join(', ') : 'Todos os status';
+}
+
 function aplicarFiltros(){
   filtroId = document.getElementById('f_filtro_id').value.trim();
-  filtroStatus = document.getElementById('f_filtro_status').value;
+  filtroStatusMulti = STATUS_ORDER.filter(s => {
+    const cb = document.getElementById('statfin_'+s.key);
+    return cb && cb.checked;
+  }).map(s => s.key);
   filtroCaminho = document.getElementById('f_filtro_caminho').value;
   filtroLoja = document.getElementById('f_filtro_loja').value;
   filtroAtrasado = document.getElementById('cond_producao').checked;
   filtroEntregaAtrasada = document.getElementById('cond_material').checked;
   paginaOperacionalAtual = 1;
   atualizarLabelCondFiltro();
+  atualizarLabelStatusFin();
   render();
 }
 function limparFiltros(){
   document.getElementById('f_filtro_id').value = '';
-  document.getElementById('f_filtro_status').value = '';
+  STATUS_ORDER.forEach(s => { const cb = document.getElementById('statfin_'+s.key); if(cb) cb.checked=false; });
   document.getElementById('f_filtro_caminho').value = '';
   document.getElementById('f_filtro_loja').value = '';
   document.getElementById('cond_producao').checked = false;
   document.getElementById('cond_material').checked = false;
   filtroId = '';
-  filtroStatus = '';
+  filtroStatusMulti = [];
   filtroStatusOp = '';
   filtroCaminho = '';
   filtroLoja = '';
@@ -1772,6 +1794,7 @@ function limparFiltros(){
   filtroEntregaAtrasada = false;
   paginaOperacionalAtual = 1;
   atualizarLabelCondFiltro();
+  atualizarLabelStatusFin();
   render();
 }
 
@@ -2329,7 +2352,7 @@ function renderModalDetalhe(id, detalhe){
     <div class="pedido-title" style="font-size:17px;padding-right:30px;">Pedido ${p.idPedido} — ${p.loja}</div>
     <div style="margin-top:10px;">
       <div class="status-linha"><span class="status-tag-label">Operacional</span><span class="badge ${statusOp.cls}">${statusOp.emoji} ${statusOp.label}</span></div>
-      ${modoRestrito ? '' : `<div class="status-linha"><span class="status-tag-label">Financeiro</span><span class="badge ${statusFin.cls}">${statusFin.emoji} ${statusFin.label}</span></div>`}
+      ${ehDesigner ? '' : `<div class="status-linha"><span class="status-tag-label">Financeiro</span><span class="badge ${statusFin.cls}">${statusFin.emoji} ${statusFin.label}</span></div>`}
       ${caminhoInfo ? `<div class="status-linha"><span class="status-tag-label">Caminho</span><span class="caminho-badge caminho-${p.caminho}">${caminhoInfo.label}</span></div>` : ''}
       ${(isProducaoAtrasada(p)||isMaterialAtrasado(p)) ? `<div class="status-linha"><span class="status-tag-label">Tags</span><span class="badge risk">⚠️ Atrasado</span></div>` : ''}
     </div>
@@ -2456,17 +2479,14 @@ function renderModalDetalhe(id, detalhe){
 
 function render(){
   pedidos.sort(compararNovoParaAntigo);
+  const ehDesigner = perfilAtual === 'designer';
   const modoRestrito = ['assistente','designer'].includes(perfilAtual);
 
-  const selStatus = document.getElementById('f_filtro_status');
-  if(selStatus.options.length===1){
-    STATUS_ORDER.forEach(s=>{
-      const opt = document.createElement('option');
-      opt.value = s.key;
-      opt.textContent = s.emoji + ' ' + s.label;
-      selStatus.appendChild(opt);
-    });
-    selStatus.value = filtroStatus;
+  const statusFinPainel = document.getElementById('statusFinPainel');
+  if(statusFinPainel.children.length===0){
+    statusFinPainel.innerHTML = STATUS_ORDER.map(s=>`
+      <label style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;cursor:pointer;white-space:nowrap;"><input type="checkbox" id="statfin_${s.key}" onchange="aplicarFiltros()"> ${s.emoji} ${s.label}</label>
+    `).join('');
   }
 
   // Camada 1 — resumo por status operacional (sempre sobre o total, não sobre o filtro atual)
@@ -2514,7 +2534,7 @@ function render(){
           <td>${p.caminho && CAMINHO_INFO[p.caminho] ? `<span class="caminho-badge caminho-${p.caminho}">${CAMINHO_INFO[p.caminho].label}</span>` : `<span class="caminho-badge caminho-indef">-</span>`}</td>
           <td>
             <div class="status-linha"><span class="status-tag-label">Operacional</span><span class="badge ${statusOp.cls}">${statusOp.emoji} ${statusOp.label}</span></div>
-            ${modoRestrito ? '' : `<div class="status-linha"><span class="status-tag-label">Financeiro</span><span class="badge ${statusFin.cls}">${statusFin.emoji} ${statusFin.label}</span></div>`}
+            ${ehDesigner ? '' : `<div class="status-linha"><span class="status-tag-label">Financeiro</span><span class="badge ${statusFin.cls}">${statusFin.emoji} ${statusFin.label}</span></div>`}
             ${isProducaoAtrasada(p) || isMaterialAtrasado(p) ? `<div class="status-linha"><span class="status-tag-label">Tags</span><span class="badge risk">⚠️ Atrasado</span></div>` : ''}
           </td>
           <td>${tempoNoSistema(p)}</td>
