@@ -368,7 +368,7 @@
       <div class="field" style="position:relative;">
         <label>Status financeiro</label>
         <button type="button" id="statusFinBtn" onclick="toggleStatusFinPainel(event)" style="width:100%;text-align:left;background:#fff;">Todos os status</button>
-        <div id="statusFinPainel" style="display:none;position:absolute;top:100%;left:0;margin-top:4px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 14px;z-index:30;box-shadow:0 8px 20px rgba(0,0,0,.14);min-width:260px;"></div>
+        <div id="statusFinPainel" style="display:none;position:absolute;top:100%;left:0;margin-top:4px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 14px;z-index:30;box-shadow:0 8px 20px rgba(0,0,0,.14);width:280px;"></div>
       </div>
       <div class="field" style="position:relative;">
         <label>Filtrar por condição</label>
@@ -2486,9 +2486,9 @@ function render(){
   if(statusFinPainel.children.length===0){
     const opcoesStatusFin = perfilAtual==='assistente' ? STATUS_ORDER.filter(s=>!['sinal_pendente','sinal_pago'].includes(s.key)) : STATUS_ORDER;
     statusFinPainel.innerHTML = opcoesStatusFin.map(s=>`
-      <label style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;cursor:pointer;white-space:nowrap;">
-        <input type="checkbox" id="statfin_${s.key}" onchange="aplicarFiltros()" style="flex:0 0 auto;margin:0;">
-        <span style="display:inline-block;width:20px;flex:0 0 auto;">${s.emoji}</span>
+      <label style="display:grid;grid-template-columns:16px 20px 1fr;align-items:center;column-gap:8px;padding:6px 0;font-size:13px;cursor:pointer;">
+        <input type="checkbox" id="statfin_${s.key}" onchange="aplicarFiltros()" style="margin:0;">
+        <span>${s.emoji}</span>
         <span>${s.label}</span>
       </label>
     `).join('');
