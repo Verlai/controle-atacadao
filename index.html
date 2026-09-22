@@ -2484,8 +2484,13 @@ function render(){
 
   const statusFinPainel = document.getElementById('statusFinPainel');
   if(statusFinPainel.children.length===0){
-    statusFinPainel.innerHTML = STATUS_ORDER.map(s=>`
-      <label style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;cursor:pointer;white-space:nowrap;"><input type="checkbox" id="statfin_${s.key}" onchange="aplicarFiltros()"> ${s.emoji} ${s.label}</label>
+    const opcoesStatusFin = perfilAtual==='assistente' ? STATUS_ORDER.filter(s=>!['sinal_pendente','sinal_pago'].includes(s.key)) : STATUS_ORDER;
+    statusFinPainel.innerHTML = opcoesStatusFin.map(s=>`
+      <label style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;cursor:pointer;white-space:nowrap;">
+        <input type="checkbox" id="statfin_${s.key}" onchange="aplicarFiltros()" style="flex:0 0 auto;margin:0;">
+        <span style="display:inline-block;width:20px;flex:0 0 auto;">${s.emoji}</span>
+        <span>${s.label}</span>
+      </label>
     `).join('');
   }
 
