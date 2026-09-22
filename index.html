@@ -399,6 +399,14 @@
     <div class="modal-panel" id="modalDetalheConteudo"></div>
   </div>
 
+  <div class="modal-overlay" id="modalControleNF" onclick="if(event.target===this) fecharControleNF()">
+    <div class="modal-panel" id="modalControleNFConteudo" style="max-width:640px;"></div>
+  </div>
+
+  <div class="modal-overlay" id="modalPreviaNF">
+    <div class="modal-panel" id="modalPreviaNFConteudo" style="max-width:560px;"></div>
+  </div>
+
 
   <div class="panel">
     <h2>Outros módulos</h2>
@@ -2216,6 +2224,232 @@ async function carregarDetalhePedido(id){
   if(resp && resp.ok){
     detalheCache[id] = resp.data;
     if(detalheAtualId===id) renderModalDetalhe(id, resp.data);
+    if(controleNfPedidoId===id) renderControleNF();
+  }
+}
+
+// --- CONTROLE DE NF ---
+// Assume que a action "pedido_detalhe" no n8n devolve, além de itens/observacoes,
+// um array "notasFiscais": [{id, numero, dataEmissao, arquivoUrl, extraidoAutomaticamente}, ...]
+const SUPABASE_BUCKET_NF = 'notas-fiscais-temp';
+let controleNfPedidoId = null;
+let nfExtrasSelecionados = {}; // { pedidoId: ['email@extra.com', ...] } — só durante a sessão, não vai pro cadastro da loja
+
+function resumoNfPedido(pedidoId){
+  const d = detalheCache[pedidoId];
+  if(!d) return 'Ver em Controle de NF';
+  const nfs = d.notasFiscais || [];
+  if(nfs.length === 0) return 'Nenhuma NF enviada ainda';
+  return nfs.map(n => n.numero || '(nº pendente)').join(', ');
+}
+
+function abrirControleNF(pedidoId){
+  controleNfPedidoId = pedidoId;
+  document.getElementById('modalControleNF').classList.add('aberto');
+  renderControleNF();
+  if(!detalheCache[pedidoId]) carregarDetalhePedido(pedidoId);
+  const p = pedidos.find(x=>x.id===pedidoId);
+  if(p && p._server && p._server.loja_id && !lojaEmailsNfCache[p._server.loja_id]){
+    carregarEmailsNfLoja(p._server.loja_id).then(renderControleNF);
+  }
+}
+function fecharControleNF(){
+  document.getElementById('modalControleNF').classList.remove('aberto');
+  controleNfPedidoId = null;
+}
+
+function renderControleNF(){
+  const el = document.getElementById('modalControleNFConteudo');
+  if(!el || !controleNfPedidoId) return;
+  const pedidoId = controleNfPedidoId;
+  const p = pedidos.find(x=>x.id===pedidoId);
+  if(!p){ el.innerHTML = ''; return; }
+  const d = detalheCache[pedidoId];
+  const nfs = d ? (d.notasFiscais || []) : null;
+  const lojaId = p._server && p._server.loja_id;
+  const emailsCadastrados = lojaId ? (lojaEmailsNfCache[lojaId] || []) : [];
+  const emailsExtras = nfExtrasSelecionados[pedidoId] || [];
+
+  el.innerHTML = `
+    <span class="modal-close" onclick="fecharControleNF()">✕</span>
+    <div class="pedido-title" style="font-size:16px;padding-right:30px;">Controle de NF — Pedido ${p.idPedido}</div>
+
+    <div class="panel" style="margin:14px 0 0;padding:14px 16px;">
+      <h2 style="font-size:13px;">Notas fiscais deste pedido</h2>
+      ${nfs===null ? '<div class="hint">Carregando...</div>' : (
+        nfs.length===0 ? '<div class="hint">Nenhuma NF enviada ainda.</div>' :
+        nfs.map(n => `
+          <div class="pedido-sub" style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px dashed var(--line);">
+            <label style="display:flex;align-items:flex-start;gap:6px;">
+              <input type="checkbox" class="nfCheck_${pedidoId}" value="${n.id}" checked style="margin-top:3px;">
+              <span>
+                ${n.numero ? escapeAttr(n.numero) : '<em>nº não identificado</em>'} · ${n.dataEmissao ? fmtAny(n.dataEmissao) : '<em>data não identificada</em>'}
+                ${n.arquivoUrl ? ` · <a href="${n.arquivoUrl}" target="_blank">Ver arquivo</a>` : ''}
+                ${!n.extraidoAutomaticamente ? '<div style="color:var(--risk);font-size:11.5px;">⚠️ não identificado automaticamente — confira/edite abaixo</div>' : ''}
+              </span>
+            </label>
+            <div style="display:flex;gap:6px;">
+              <button class="ghost" style="padding:2px 8px;font-size:12px;" onclick="toggleEditarNF('${n.id}')">Editar</button>
+              <button class="ghost" style="padding:2px 8px;font-size:12px;" onclick="excluirNF('${n.id}','${pedidoId}', this)">Remover</button>
+            </div>
+          </div>
+          <div id="nfEdit_${n.id}" style="display:none;margin:6px 0 10px;padding:8px;background:var(--bg-soft,#f6f6f6);border-radius:8px;">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;">
+              <div class="field"><label>Número</label><input id="nef_numero_${n.id}" value="${escapeAttr(n.numero||'')}" style="width:140px;"></div>
+              <div class="field"><label>Data emissão</label><input type="date" id="nef_data_${n.id}" value="${toISO(n.dataEmissao)}"></div>
+              <button class="primary" onclick="salvarEdicaoNF('${n.id}','${pedidoId}', this)">Salvar</button>
+            </div>
+          </div>
+        `).join('')
+      )}
+      <div style="margin-top:12px;">
+        <input type="file" id="nfArquivos_${pedidoId}" accept="application/pdf" multiple>
+        <button class="primary" onclick="uploadArquivosNF('${pedidoId}', this)">Enviar arquivo(s) de NF</button>
+      </div>
+    </div>
+
+    <div class="panel" style="margin:14px 0 0;padding:14px 16px;">
+      <h2 style="font-size:13px;">Enviar por e-mail</h2>
+      ${!lojaId ? '<div class="hint">Este pedido não tem loja vinculada — não é possível montar a lista de e-mails automaticamente.</div>' : (
+        emailsCadastrados.length===0
+          ? '<div class="hint">Essa loja ainda não tem e-mail cadastrado pra NF. Cadastre em "Lojas" ou adicione um extra abaixo.</div>'
+          : emailsCadastrados.map(e => `
+              <label style="display:block;padding:2px 0;">
+                <input type="checkbox" class="nfEmailCheck_${pedidoId}" value="${escapeAttr(e.email)}" checked> ${escapeAttr(e.email)}
+              </label>
+            `).join('')
+      )}
+      ${emailsExtras.map(em => `
+        <label style="display:block;padding:2px 0;">
+          <input type="checkbox" class="nfEmailCheck_${pedidoId}" value="${escapeAttr(em)}" checked> ${escapeAttr(em)}
+          <button class="ghost" style="padding:0 6px;font-size:11px;" onclick="removerEmailExtraNF('${pedidoId}','${escapeAttr(em)}')">x</button>
+        </label>
+      `).join('')}
+      <div style="display:flex;gap:8px;margin-top:8px;align-items:flex-end;">
+        <div class="field" style="flex:1;"><label>Adicionar e-mail só neste envio</label><input type="email" id="nfEmailExtra_${pedidoId}" placeholder="nome@empresa.com"></div>
+        <button class="ghost" onclick="adicionarEmailExtraNF('${pedidoId}')">Adicionar</button>
+      </div>
+      <div class="row-btn" style="margin-top:14px;">
+        <button class="primary" onclick="abrirPreviaEnvioNF('${pedidoId}')">Enviar NF</button>
+      </div>
+    </div>
+  `;
+}
+
+function toggleEditarNF(nfId){
+  const el = document.getElementById('nfEdit_'+nfId);
+  if(el) el.style.display = el.style.display==='none' ? 'block' : 'none';
+}
+
+async function salvarEdicaoNF(nfId, pedidoId, btn){
+  const numero = document.getElementById('nef_numero_'+nfId).value.trim();
+  const dataEmissao = document.getElementById('nef_data_'+nfId).value;
+  setBotaoCarregando(btn, 'Salvando...');
+  try{
+    const resp = await postToSheet({action:'pedido_nf_editar', data:{ nfId, numero, dataEmissao }});
+    if(!resp || !resp.ok){ alert('Não consegui salvar: ' + (resp&&resp.error||'erro desconhecido')); return; }
+    await carregarDetalhePedido(pedidoId);
+  } finally {
+    restaurarBotao(btn);
+  }
+}
+
+async function excluirNF(nfId, pedidoId, btn){
+  if(!confirm('Remover essa NF do pedido? O arquivo também será removido.')) return;
+  setBotaoCarregando(btn, 'Removendo...');
+  try{
+    const resp = await postToSheet({action:'pedido_nf_excluir', data:{ nfId }});
+    if(!resp || !resp.ok){ alert('Não consegui remover: ' + (resp&&resp.error||'erro desconhecido')); return; }
+    await carregarDetalhePedido(pedidoId);
+  } finally {
+    restaurarBotao(btn);
+  }
+}
+
+async function uploadArquivosNF(pedidoId, btn){
+  const input = document.getElementById('nfArquivos_'+pedidoId);
+  const arquivos = input && input.files ? Array.from(input.files) : [];
+  if(arquivos.length===0){ alert('Escolha ao menos um arquivo PDF.'); return; }
+  const p = pedidos.find(x=>x.id===pedidoId);
+  if(!p || !p._server){ alert('Pedido não encontrado.'); return; }
+  const textoOriginal = btn.innerHTML;
+  btn.disabled = true;
+  try{
+    for(const arquivo of arquivos){
+      btn.innerHTML = `Enviando ${arquivo.name}...`;
+      const caminhoStorage = `${p._server.id}/${Date.now()}_${arquivo.name}`;
+      const { error: erroUpload } = await supabaseClient.storage
+        .from(SUPABASE_BUCKET_NF)
+        .upload(caminhoStorage, arquivo, { contentType: 'application/pdf', upsert: false });
+      if(erroUpload){ alert(`Não consegui enviar ${arquivo.name}: ${erroUpload.message}`); continue; }
+      const resp = await postToSheet({action:'pedido_nf_upload', data:{ pedidoId: p._server.id, nomeArquivo: arquivo.name, storageBucket: SUPABASE_BUCKET_NF, storagePath: caminhoStorage }});
+      if(!resp || !resp.ok){ alert(`O arquivo ${arquivo.name} foi enviado, mas não consegui processar: ` + (resp&&resp.error||'erro desconhecido')); }
+    }
+    input.value = '';
+    await carregarDetalhePedido(pedidoId);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = textoOriginal;
+  }
+}
+
+function adicionarEmailExtraNF(pedidoId){
+  const input = document.getElementById('nfEmailExtra_'+pedidoId);
+  const email = input.value.trim();
+  if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ alert('Preencha um e-mail válido.'); return; }
+  if(!nfExtrasSelecionados[pedidoId]) nfExtrasSelecionados[pedidoId] = [];
+  if(!nfExtrasSelecionados[pedidoId].includes(email)) nfExtrasSelecionados[pedidoId].push(email);
+  input.value = '';
+  renderControleNF();
+}
+function removerEmailExtraNF(pedidoId, email){
+  if(!nfExtrasSelecionados[pedidoId]) return;
+  nfExtrasSelecionados[pedidoId] = nfExtrasSelecionados[pedidoId].filter(e=>e!==email);
+  renderControleNF();
+}
+
+function abrirPreviaEnvioNF(pedidoId){
+  const nfIds = Array.from(document.querySelectorAll('.nfCheck_'+pedidoId+':checked')).map(c=>c.value);
+  const emails = Array.from(document.querySelectorAll('.nfEmailCheck_'+pedidoId+':checked')).map(c=>c.value);
+  if(nfIds.length===0){ alert('Selecione ao menos uma NF pra enviar.'); return; }
+  if(emails.length===0){ alert('Selecione ao menos um e-mail de destino.'); return; }
+  const p = pedidos.find(x=>x.id===pedidoId);
+  const d = detalheCache[pedidoId];
+  const nfsSelecionadas = (d.notasFiscais||[]).filter(n=>nfIds.includes(n.id));
+  const assuntoPadrao = `NF - Pedido ${p.idPedido} - ${p.loja}`;
+  const corpoPadrao = `Olá,\n\nSeguem em anexo a(s) nota(s) fiscal(is) referente(s) ao pedido ${p.idPedido}.\n\nQualquer dúvida, estamos à disposição.`;
+  document.getElementById('modalPreviaNF').classList.add('aberto');
+  document.getElementById('modalPreviaNFConteudo').innerHTML = `
+    <span class="modal-close" onclick="document.getElementById('modalPreviaNF').classList.remove('aberto')">✕</span>
+    <div class="pedido-title" style="font-size:16px;padding-right:30px;">Confirmar envio de NF</div>
+    <div class="modal-grid" style="margin-top:10px;">
+      <div><div class="k">Para</div><div class="v">${emails.map(escapeAttr).join(', ')}</div></div>
+    </div>
+    <div class="field" style="margin-top:10px;"><label>Assunto</label><input id="previaNfAssunto" value="${escapeAttr(assuntoPadrao)}" style="width:100%;"></div>
+    <div class="field" style="margin-top:10px;"><label>Corpo do e-mail</label><textarea id="previaNfCorpo" rows="6" style="width:100%;">${corpoPadrao}</textarea></div>
+    <div style="margin-top:10px;"><div class="k">Anexos (${nfsSelecionadas.length})</div>
+      ${nfsSelecionadas.map(n=>`<div class="pedido-sub">📎 ${n.numero||'(nº pendente)'} — ${n.dataEmissao?fmtAny(n.dataEmissao):'(data pendente)'}</div>`).join('')}
+    </div>
+    <div class="row-btn" style="margin-top:16px;">
+      <button class="ghost" onclick="document.getElementById('modalPreviaNF').classList.remove('aberto')">Voltar e ajustar</button>
+      <button class="primary" onclick="confirmarEnvioNF('${pedidoId}', ${JSON.stringify(nfIds)}, ${JSON.stringify(emails)}, this)">Confirmar envio</button>
+    </div>
+  `;
+}
+
+async function confirmarEnvioNF(pedidoId, nfIds, emails, btn){
+  const assunto = document.getElementById('previaNfAssunto').value.trim();
+  const corpo = document.getElementById('previaNfCorpo').value;
+  const p = pedidos.find(x=>x.id===pedidoId);
+  setBotaoCarregando(btn, 'Enviando...');
+  try{
+    const resp = await postToSheet({action:'pedido_nf_confirmar_envio', data:{ pedidoId: p._server.id, nfIds, emails, assunto, corpo }, perfil: perfilAtual});
+    if(!resp || !resp.ok){ alert('Não consegui enviar: ' + (resp&&resp.error||'erro desconhecido')); return; }
+    alert('NF enviada com sucesso.');
+    document.getElementById('modalPreviaNF').classList.remove('aberto');
+    await carregarDetalhePedido(pedidoId);
+  } finally {
+    restaurarBotao(btn);
   }
 }
 async function enviarObservacao(id, btn){
@@ -2362,8 +2596,8 @@ function renderModalDetalhe(id, detalhe){
       <div><div class="k">Data do pedido</div><div class="v">${fmtAny(p.dataPedido)}</div></div>
       <div><div class="k">Prazo estimado de entrega</div><div class="v">${fmtAny(p.dataEntrega)}</div></div>
       <div><div class="k">Entregue em</div><div class="v">${fmtAny(p.dataEntregaReal)}</div></div>
-      <div><div class="k">Nota fiscal</div><div class="v">${p.nota || '-'}</div></div>
-      <div><div class="k">Status da NF</div><div class="v">${p.emissao ? 'Emitida em '+fmtAny(p.emissao) : 'Pendente'}</div></div>
+      <div><div class="k">Nota(s) fiscal(is)</div><div class="v">${resumoNfPedido(p.id)}</div></div>
+      <div><div class="k">NF Lançada?</div><div class="v">${p.nfLancada==='sim' ? 'Sim' : (p.nfLancada==='nao' ? 'Não' : '-')}</div></div>
       ${modoRestrito ? '' : `<div><div class="k">Data limite pgto loja</div><div class="v">${limiteStr}</div></div>`}
       <div><div class="k">Criado por</div><div class="v">${p.criadoPor || '— (não informado)'}</div></div>
     </div>
@@ -2445,19 +2679,7 @@ function renderModalDetalhe(id, detalhe){
 
     ${ehDesigner ? '' : `
     <div class="pedido-actions" style="margin-top:16px;">
-      ${(!p.nota || p.nota==='-') ? `
-      <span class="mini">Nota fiscal:
-        <input type="text" id="mnumnf_${p.id}" placeholder="Nº NF" style="width:90px;">
-        <input type="date" id="mdatanf_${p.id}">
-        <button onclick="adicionarNotaFiscal('${p.id}','mnumnf_${p.id}','mdatanf_${p.id}',this)">Salvar</button>
-      </span>` : ''}
-      <span class="mini">NF Lançada no sistema Atacadão?
-        <select onchange="marcarNFLancada('${p.id}', this.value, this)">
-          <option value="" ${p.nfLancada?'':'selected'}>-</option>
-          <option value="sim" ${p.nfLancada==='sim'?'selected':''}>Sim</option>
-          <option value="nao" ${p.nfLancada==='nao'?'selected':''}>Não</option>
-        </select>
-      </span>
+      <button class="secondary" onclick="abrirControleNF('${p.id}')">📄 Controle de NF</button>
       <span class="mini">Loja pagou em
         <input type="date" id="mpag_${p.id}" value="${toISO(p.dataPgtoLoja)}">
         <button onclick="setCampo('${p.id}','dataPgtoLoja','mpag_${p.id}',this)">Salvar</button>
@@ -3292,6 +3514,17 @@ function renderizarLojasAba(){
             <button class="ghost" onclick="adicionarContatoLoja('${l.id}', this)">Adicionar contato</button>
           </div>
         </div>
+        <div style="margin-top:14px;border-top:1px dashed var(--line);padding-top:14px;">
+          <label style="font-weight:600;">E-mails pra envio de Nota Fiscal</label>
+          <div class="hint" style="margin-top:2px;">Toda vez que uma NF dessa loja for enviada pelo sistema, vai por padrão pra todos esses e-mails.</div>
+          <div id="lojaEmailsNfLista_${l.id}" style="margin:10px 0;display:flex;flex-direction:column;gap:6px;">
+            <div class="hint">Carregando...</div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;">
+            <div class="field" style="flex:1;min-width:220px;"><label>E-mail</label><input id="lef_email_nf_${l.id}" type="email" placeholder="nome@empresa.com"></div>
+            <button class="ghost" onclick="adicionarEmailNfLoja('${l.id}', this)">Adicionar e-mail</button>
+          </div>
+        </div>
       </div>
     </div>
   `).join('');
@@ -3354,6 +3587,61 @@ async function desativarContatoLoja(contatoId, lojaId, btn){
   }
 }
 
+let lojaEmailsNfCache = {};
+
+async function carregarEmailsNfLoja(id){
+  const resp = await postToSheet({action:'loja_emails_nf_listar', data:{ lojaId: id }});
+  if(resp && resp.ok){
+    lojaEmailsNfCache[id] = resp.data || [];
+    renderizarEmailsNfLoja(id);
+  } else {
+    const el = document.getElementById('lojaEmailsNfLista_'+id);
+    if(el) el.innerHTML = '<div class="hint">Não consegui carregar os e-mails.</div>';
+  }
+}
+
+function renderizarEmailsNfLoja(id){
+  const el = document.getElementById('lojaEmailsNfLista_'+id);
+  if(!el) return;
+  const emails = lojaEmailsNfCache[id] || [];
+  if(emails.length === 0){
+    el.innerHTML = '<div class="hint">Nenhum e-mail cadastrado ainda.</div>';
+    return;
+  }
+  el.innerHTML = emails.map(e => `
+    <div class="pedido-sub" style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+      <span>${escapeAttr(e.email)}</span>
+      <button class="ghost" style="padding:2px 8px;font-size:12px;" onclick="desativarEmailNfLoja('${e.id}','${id}', this)">Remover</button>
+    </div>
+  `).join('');
+}
+
+async function adicionarEmailNfLoja(id, btn){
+  const email = document.getElementById('lef_email_nf_'+id).value.trim();
+  if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ alert('Preencha um e-mail válido.'); return; }
+  setBotaoCarregando(btn, 'Adicionando...');
+  try{
+    const resp = await postToSheet({action:'loja_email_nf_add', data:{ lojaId:id, email }});
+    if(!resp || !resp.ok){ alert('Não consegui adicionar o e-mail: ' + (resp&&resp.error||'erro desconhecido')); return; }
+    document.getElementById('lef_email_nf_'+id).value = '';
+    await carregarEmailsNfLoja(id);
+  } finally {
+    restaurarBotao(btn);
+  }
+}
+
+async function desativarEmailNfLoja(emailId, lojaId, btn){
+  if(!confirm('Remover esse e-mail da lista de envio de NF?')) return;
+  setBotaoCarregando(btn, 'Removendo...');
+  try{
+    const resp = await postToSheet({action:'loja_email_nf_toggle', data:{ id: emailId, ativo: false }});
+    if(!resp || !resp.ok){ alert('Não consegui remover o e-mail: ' + (resp&&resp.error||'erro desconhecido')); return; }
+    await carregarEmailsNfLoja(lojaId);
+  } finally {
+    restaurarBotao(btn);
+  }
+}
+
 function toggleEditarLoja(id){
   const el = document.getElementById('lojaEdit_'+id);
   if(!el) return;
@@ -3361,6 +3649,9 @@ function toggleEditarLoja(id){
   el.style.display = abrindo ? 'block' : 'none';
   if(abrindo && !lojaContatosCache[id]){
     carregarContatosLoja(id);
+  }
+  if(abrindo && !lojaEmailsNfCache[id]){
+    carregarEmailsNfLoja(id);
   }
 }
 
