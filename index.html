@@ -2419,6 +2419,12 @@ function abrirPreviaEnvioNF(pedidoId){
   const p = pedidos.find(x=>x.id===pedidoId);
   const d = detalheCache[pedidoId];
   const nfsSelecionadas = (d.notasFiscais||[]).filter(n=>nfIds.includes(n.id));
+  const semNumero = nfsSelecionadas.filter(n=>!n.numero);
+  if(semNumero.length>0){
+    previaNfAtual = null;
+    alert('Preencha o número da nota fiscal antes de enviar (use o botão "Editar" na NF sem número).');
+    return;
+  }
   const assuntoPadrao = `NF - Pedido ${p.idPedido} - ${p.loja}`;
   const corpoPadrao = `Olá,\n\nSeguem em anexo a(s) nota(s) fiscal(is) referente(s) ao pedido ${p.idPedido}.\n\nQualquer dúvida, estamos à disposição.`;
   document.getElementById('modalPreviaNF').classList.add('aberto');
