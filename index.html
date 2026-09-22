@@ -2285,7 +2285,7 @@ function renderControleNF(){
               <span>
                 ${n.numero ? escapeAttr(n.numero) : '<em>nº não identificado</em>'} · ${n.dataEmissao ? fmtAny(n.dataEmissao) : '<em>data não identificada</em>'}
                 ${n.arquivoUrl ? ` · <a href="${n.arquivoUrl}" target="_blank">Ver arquivo</a>` : ''}
-                ${!n.extraidoAutomaticamente ? '<div style="color:var(--risk);font-size:11.5px;">⚠️ não identificado automaticamente — confira/edite abaixo</div>' : ''}
+                ${!n.extraidoAutomaticamente ? '<div style="color:var(--risk);font-size:11.5px;">⚠️ não identificado automaticamente — confira/edite</div>' : ''}
               </span>
             </label>
             <div style="display:flex;gap:6px;">
@@ -2408,11 +2408,14 @@ function removerEmailExtraNF(pedidoId, email){
   renderControleNF();
 }
 
+let previaNfAtual = null; // {pedidoId, nfIds, emails} — guardado aqui pra evitar montar JSON dentro de atributo onclick
+
 function abrirPreviaEnvioNF(pedidoId){
   const nfIds = Array.from(document.querySelectorAll('.nfCheck_'+pedidoId+':checked')).map(c=>c.value);
   const emails = Array.from(document.querySelectorAll('.nfEmailCheck_'+pedidoId+':checked')).map(c=>c.value);
   if(nfIds.length===0){ alert('Selecione ao menos uma NF pra enviar.'); return; }
   if(emails.length===0){ alert('Selecione ao menos um e-mail de destino.'); return; }
+  previaNfAtual = { pedidoId, nfIds, emails };
   const p = pedidos.find(x=>x.id===pedidoId);
   const d = detalheCache[pedidoId];
   const nfsSelecionadas = (d.notasFiscais||[]).filter(n=>nfIds.includes(n.id));
@@ -2432,12 +2435,14 @@ function abrirPreviaEnvioNF(pedidoId){
     </div>
     <div class="row-btn" style="margin-top:16px;">
       <button class="ghost" onclick="document.getElementById('modalPreviaNF').classList.remove('aberto')">Voltar e ajustar</button>
-      <button class="primary" onclick="confirmarEnvioNF('${pedidoId}', ${JSON.stringify(nfIds)}, ${JSON.stringify(emails)}, this)">Confirmar envio</button>
+      <button class="primary" onclick="confirmarEnvioNF(this)">Confirmar envio</button>
     </div>
   `;
 }
 
-async function confirmarEnvioNF(pedidoId, nfIds, emails, btn){
+async function confirmarEnvioNF(btn){
+  if(!previaNfAtual) return;
+  const { pedidoId, nfIds, emails } = previaNfAtual;
   const assunto = document.getElementById('previaNfAssunto').value.trim();
   const corpo = document.getElementById('previaNfCorpo').value;
   const p = pedidos.find(x=>x.id===pedidoId);
@@ -2446,6 +2451,7 @@ async function confirmarEnvioNF(pedidoId, nfIds, emails, btn){
     const resp = await postToSheet({action:'pedido_nf_confirmar_envio', data:{ pedidoId: p._server.id, nfIds, emails, assunto, corpo }, perfil: perfilAtual});
     if(!resp || !resp.ok){ alert('Não consegui enviar: ' + (resp&&resp.error||'erro desconhecido')); return; }
     alert('NF enviada com sucesso.');
+    previaNfAtual = null;
     document.getElementById('modalPreviaNF').classList.remove('aberto');
     await carregarDetalhePedido(pedidoId);
   } finally {
